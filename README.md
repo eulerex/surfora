@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Surfora
 
-## Getting Started
+Multi-language web frontend, part of the Surfora platform.
 
-First, run the development server:
+Tech: Next.js 16 · App Router · TypeScript · Tailwind CSS · next-intl
+
+## Locales
+
+`/ja` (default), `/zh`, `/en` — configured in `src/i18n/routing.ts`.
+
+## Local dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+nvm use          # Node 20 (see .nvmrc)
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 — you get redirected to `/ja`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm build
+pnpm start
+```
 
-## Learn More
+## Docker
 
-To learn more about Next.js, take a look at the following resources:
+`Dockerfile` uses Next.js `standalone` output. Multi-stage: deps → builder → runner. Final image runs as UID 1001, listens on `PORT=3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+docker build -t surfora .
+docker run --rm -p 3000:3000 surfora
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Served behind the platform Nginx at `/opt/apps/` — see the `server-archetect` repo for the wider architecture.
