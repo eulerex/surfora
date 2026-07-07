@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Setup SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "$SSH_USER@$SSH_HOST" bash <<EOF
+          set -euo pipefail
+          echo "→ deploying $COMMIT_SHA"
+          cd /opt/apps/surfora
+          git fetch --quiet
+          git reset --hard "$COMMIT_SHA"
+          cd /opt/apps
+          docker compose build surfora
+          docker compose up -d surfora
+          docker image prune -f
+          echo "→ waiting for surfora healthy"
+          for i in \$(seq 1 24); do
+            s=\$(docker inspect surfora --format '{{.State.Health.Status}}' 2>/dev/null)
+            echo "  attempt \$i: \$s"
+            [ "\$s" = "healthy" ] && exit 0
+            sleep 5
+          done
+          echo "✗ surfora did not become healthy" >&2
+          docker logs surfora --tail 50
+          exit 1
+          EOF
