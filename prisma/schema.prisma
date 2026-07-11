@@ -11,3 +11,39 @@ model Ping {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
 }
+
+enum Region {
+  SHONAN
+  CHIBA
+  SHIZUOKA
+  MIYAZAKI
+}
+
+model Spot {
+  id                Int      @id @default(autoincrement())
+  slug              String   @unique
+
+  nameJa            String
+  nameEn            String
+  nameZh            String?
+
+  region            Region
+  latitude          Float
+  longitude         Float
+
+  trainAccessible   Boolean  @default(false)
+  beginnerFriendly  Boolean  @default(false)
+  boardTypes        String[] @default([])
+
+  optimalSwellDir   String?
+  offshoreWindDir   String?
+
+  descJa            String?
+  descEn            String?
+  descZh            String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([region])
+}
