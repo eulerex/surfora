@@ -48,23 +48,36 @@ export async function fetchForecast(
   lat: number,
   lng: number
 ): Promise<Forecast | null> {
-  try {
-    const marineUrl = `${MARINE_URL}?latitude=${lat}&longitude=${lng}&hourly=wave_height,wave_period,wave_direction&timezone=${TIMEZONE}&forecast_days=1`;
-    const weatherUrl = `${WEATHER_URL}?latitude=${lat}&longitude=${lng}&hourly=wind_speed_10m,wind_direction_10m,temperature_2m&timezone=${TIMEZONE}&wind_speed_unit=ms&forecast_days=1`;
+  const marineUrl = `${MARINE_URL}?latitude=${lat}&longitude=${lng}&hourly=wave_height,wave_period,wave_direction&timezone=${TIMEZONE}&forecast_days=1`;
+  const weatherUrl = `${WEATHER_URL}?latitude=${lat}&longitude=${lng}&hourly=wind_speed_10m,wind_direction_10m,temperature_2m&timezone=${TIMEZONE}&wind_speed_unit=ms&forecast_days=1`;
 
+  try {
     const [marineRes, weatherRes] = await Promise.all([
       fetch(marineUrl, {next: {revalidate: CACHE_TTL_SECONDS}}),
       fetch(weatherUrl, {next: {revalidate: CACHE_TTL_SECONDS}})
     ]);
-    if (!marineRes.ok || !weatherRes.ok) return null;
+    if (!marineRes.ok || !weatherRes.ok) {
+      console.error(
+        `[openMeteo] non-ok: marine=${marineRes.status} weather=${weatherRes.status} lat=${lat} lng=${lng}`
+      );
+      return null;
+    }
 
     const marine: HourlyMarine = await marineRes.json();
     const weather: HourlyWeather = await weatherRes.json();
-    if (!marine.hourly || !weather.hourly) return null;
+    if (!marine.hourly || !weather.hourly) {
+      console.error(`[openMeteo] missing hourly for ${lat},${lng}`);
+      return null;
+    }
 
     const hourKey = tokyoHourKey(new Date());
     const idx = marine.hourly.time.findIndex((t) => t.startsWith(hourKey));
-    if (idx === -1) return null;
+    if (idx === -1) {
+      console.error(
+        `[openMeteo] hourKey ${hourKey} not in times[0..${marine.hourly.time.length - 1}]: first=${marine.hourly.time[0]} last=${marine.hourly.time[marine.hourly.time.length - 1]}`
+      );
+      return null;
+    }
 
     return {
       waveHeight: marine.hourly.wave_height[idx] ?? null,
@@ -75,7 +88,11 @@ export async function fetchForecast(
       temperature: weather.hourly.temperature_2m[idx] ?? null,
       observedAt: marine.hourly.time[idx]
     };
-  } catch {
+  } catch (e) {
+    console.error(
+      `[openMeteo] fetch failed for ${lat},${lng}:`,
+      e instanceof Error ? e.message : e
+    );
     return null;
   }
 }
