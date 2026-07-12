@@ -45,5 +45,30 @@ model Spot {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
+  cams              Cam[]
+
   @@index([region])
+}
+
+model Cam {
+  id                Int      @id @default(autoincrement())
+  spotId            Int
+  slug              String   @unique
+
+  nameJa            String
+  nameEn            String
+  nameZh            String?
+
+  youtubeVideoId    String?
+  youtubeChannelId  String?
+
+  provider          String   @default("youtube")
+  active            Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  spot              Spot     @relation(fields: [spotId], references: [id], onDelete: Cascade)
+
+  @@index([spotId])
 }

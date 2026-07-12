@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type {Spot, Region} from '@prisma/client';
 import {setRequestLocale} from 'next-intl/server';
 import {prisma} from '@/lib/prisma';
@@ -109,10 +110,11 @@ export default async function SpotsPage({
               const f = spotForecast.get(spot.id) ?? null;
               const interp = spotInterp.get(spot.id) ?? null;
               return (
-                <li
-                  key={spot.id}
-                  className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5"
-                >
+                <li key={spot.id}>
+                  <Link
+                    href={`/${lc}/spots/${spot.slug}`}
+                    className="block rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 transition-colors hover:border-sky-500/40 hover:bg-zinc-900/60"
+                  >
                   <div className="mb-2 flex items-baseline justify-between">
                     <h3 className="text-lg font-medium text-zinc-100">
                       {spotName(spot, lc)}
@@ -211,6 +213,7 @@ export default async function SpotsPage({
                       {UI.noData[lc]}
                     </div>
                   )}
+                  </Link>
                 </li>
               );
             })}
