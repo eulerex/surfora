@@ -141,6 +141,45 @@ const spots = [
   }
 ];
 
+const cams = [
+  {
+    slug: 'kugenuma-aquarium',
+    spotSlug: 'kugenuma',
+    nameJa: '鵠沼 水族館前',
+    nameEn: 'Kugenuma Aquarium Front',
+    nameZh: '鹄沼 水族馆前',
+    youtubeVideoId: null,
+    youtubeChannelId: null
+  },
+  {
+    slug: 'kugenuma-monument',
+    spotSlug: 'kugenuma',
+    nameJa: '鵠沼 銅像前',
+    nameEn: 'Kugenuma Monument Front',
+    nameZh: '鹄沼 铜像前',
+    youtubeVideoId: null,
+    youtubeChannelId: null
+  },
+  {
+    slug: 'tsujido-main',
+    spotSlug: 'tsujido',
+    nameJa: '辻堂正面',
+    nameEn: 'Tsujido Main',
+    nameZh: '辻堂正面',
+    youtubeVideoId: null,
+    youtubeChannelId: null
+  },
+  {
+    slug: 'ichinomiya-cam',
+    spotSlug: 'ichinomiya',
+    nameJa: '一宮海岸',
+    nameEn: 'Ichinomiya Beach',
+    nameZh: '一宫海岸',
+    youtubeVideoId: null,
+    youtubeChannelId: null
+  }
+];
+
 async function main() {
   console.log('→ seeding spots...');
   for (const spot of spots) {
@@ -151,7 +190,24 @@ async function main() {
     });
     console.log(`  ✓ ${spot.slug} (${spot.nameJa})`);
   }
-  console.log(`→ done, ${spots.length} spots`);
+  console.log(`→ ${spots.length} spots`);
+
+  console.log('→ seeding cams...');
+  for (const cam of cams) {
+    const spot = await prisma.spot.findUnique({where: {slug: cam.spotSlug}});
+    if (!spot) {
+      console.warn(`  ✗ cam ${cam.slug} skipped (no spot ${cam.spotSlug})`);
+      continue;
+    }
+    const {spotSlug: _ignored, ...camData} = cam;
+    await prisma.cam.upsert({
+      where: {slug: cam.slug},
+      update: {...camData, spotId: spot.id},
+      create: {...camData, spotId: spot.id}
+    });
+    console.log(`  ✓ ${cam.slug} → ${cam.spotSlug}`);
+  }
+  console.log(`→ ${cams.length} cams`);
 }
 
 main()
