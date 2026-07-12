@@ -136,10 +136,13 @@ async function generate(
         ? `【浪点】\n${profile}\n\n【今日预报】${fc}\n\n用一句话判断这里今天该不该去。`
         : `[Spot]\n${profile}\n\n[Today's forecast] ${fc}\n\nGive one sentence: should someone surf here today?`;
 
+  // MiniMax-M3 emits a <think>...</think> block before the answer, so
+  // the visible answer only starts appearing 500-1500 tokens in. Keep
+  // maxTokens generous to avoid mid-sentence truncation.
   return chat({
     system: SYSTEM_BY_LOCALE[locale],
     messages: [{role: 'user', content: userPrompt}],
-    maxTokens: 200,
+    maxTokens: 2000,
     temperature: 0.7
   });
 }
