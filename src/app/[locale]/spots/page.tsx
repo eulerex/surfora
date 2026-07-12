@@ -2,6 +2,7 @@ import type {Spot, Region} from '@prisma/client';
 import {setRequestLocale} from 'next-intl/server';
 import {prisma} from '@/lib/prisma';
 import {fetchForecast, compassPoint, type Forecast} from '@/lib/openMeteo';
+import {interpretSpot} from '@/lib/interpretSpot';
 
 export const dynamic = 'force-dynamic';
 
@@ -72,6 +73,16 @@ export default async function SpotsPage({
     spots.map((s, i) => [s.id, forecasts[i]])
   );
 
+  const interpretations = await Promise.all(
+    spots.map((s, i) => {
+      const f = forecasts[i];
+      return f ? interpretSpot(s, f, lc) : Promise.resolve(null);
+    })
+  );
+  const spotInterp = new Map<number, string | null>(
+    spots.map((s, i) => [s.id, interpretations[i]])
+  );
+
   const byRegion = spots.reduce<Record<Region, Spot[]>>((acc, spot) => {
     (acc[spot.region] ||= []).push(spot);
     return acc;
@@ -96,6 +107,7 @@ export default async function SpotsPage({
           <ul className="grid gap-4 sm:grid-cols-2">
             {byRegion[region].map((spot) => {
               const f = spotForecast.get(spot.id) ?? null;
+              const interp = spotInterp.get(spot.id) ?? null;
               return (
                 <li
                   key={spot.id}
@@ -108,8 +120,14 @@ export default async function SpotsPage({
                     <span className="text-xs text-zinc-500">{spot.nameEn}</span>
                   </div>
 
+                  {interp && (
+                    <p className="mb-3 rounded-md border-l-2 border-sky-500/60 bg-sky-500/5 px-3 py-2 text-sm leading-relaxed text-sky-100">
+                      {interp}
+                    </p>
+                  )}
+
                   {spotDesc(spot, lc) && (
-                    <p className="mb-3 text-sm leading-relaxed text-zinc-400">
+                    <p className="mb-3 text-xs leading-relaxed text-zinc-500">
                       {spotDesc(spot, lc)}
                     </p>
                   )}
