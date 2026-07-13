@@ -16,7 +16,7 @@ export function LocaleSwitcher({current}: {current: Locale}) {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900/60 px-1 py-0.5 text-xs">
+    <div className="flex items-center gap-0.5 rounded-full border border-line bg-white px-0.5 py-0.5 text-xs">
       {routing.locales.map((loc) => (
         <button
           key={loc}
@@ -24,8 +24,8 @@ export function LocaleSwitcher({current}: {current: Locale}) {
           onClick={() => router.replace(pathname, {locale: loc})}
           className={
             loc === current
-              ? 'rounded-full bg-zinc-100 px-2 py-1 font-medium text-zinc-900'
-              : 'rounded-full px-2 py-1 text-zinc-400 transition-colors hover:text-zinc-100'
+              ? 'rounded-full bg-navy px-2.5 py-1 font-semibold text-white'
+              : 'rounded-full px-2.5 py-1 text-muted transition-colors hover:text-navy'
           }
           aria-current={loc === current}
         >
