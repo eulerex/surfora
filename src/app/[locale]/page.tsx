@@ -5,7 +5,7 @@ import {fetchForecast, type Forecast} from '@/lib/openMeteo';
 import {interpretSpot} from '@/lib/interpretSpot';
 import {Hero, type HeroChip} from '@/components/Hero';
 import {SpotList} from '@/components/SpotList';
-import {scoreOf} from '@/components/SpotCard';
+import {scoreOf} from '@/lib/score';
 
 export const dynamic = 'force-dynamic';
 
