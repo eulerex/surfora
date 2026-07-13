@@ -4,7 +4,7 @@ import {setRequestLocale} from 'next-intl/server';
 import {prisma} from '@/lib/prisma';
 import {fetchForecast, compassPoint} from '@/lib/openMeteo';
 import {interpretSpot} from '@/lib/interpretSpot';
-import {LiveCamEmbed} from '@/components/LiveCamEmbed';
+import {CamPicker, type CamData} from '@/components/CamPicker';
 import type {Region} from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
@@ -26,11 +26,6 @@ const T = {
   temp: {ja: '気温', zh: '气温', en: 'Air temp'},
   liveCams: {ja: 'ライブカメラ', zh: '直播摄像头', en: 'Live cams'},
   noForecast: {ja: '予報データなし', zh: '暂无预报', en: 'No forecast'},
-  noCams: {
-    ja: 'このポイントのライブカメラは未登録です。',
-    zh: '此浪点尚未登记直播摄像头。',
-    en: 'No live cams registered for this spot yet.'
-  },
   optimalSwell: {ja: '最適スウェル向き', zh: '最优浪向', en: 'Best swell from'},
   offshoreWind: {ja: '離岸風向', zh: '离岸风向', en: 'Offshore wind'},
   boards: {ja: '推奨板型', zh: '推荐板型', en: 'Boards'},
@@ -62,43 +57,50 @@ export default async function SpotDetailPage({
     lc === 'ja' ? spot.nameJa : lc === 'zh' ? (spot.nameZh ?? spot.nameJa) : spot.nameEn;
   const desc = lc === 'ja' ? spot.descJa : lc === 'zh' ? spot.descZh : spot.descEn;
 
+  const cams: CamData[] = spot.cams.map((c) => ({
+    id: c.id,
+    nameJa: c.nameJa,
+    nameEn: c.nameEn,
+    nameZh: c.nameZh,
+    youtubeVideoId: c.youtubeVideoId,
+    youtubeChannelId: c.youtubeChannelId
+  }));
+
   return (
-    <main className="mx-auto max-w-5xl px-6 py-12">
+    <main className="mx-auto max-w-5xl px-5 py-10">
       <Link
-        href={`/${lc}/spots`}
-        className="mb-6 inline-block text-sm text-zinc-500 transition-colors hover:text-zinc-200"
+        href={`/${lc}#spots`}
+        className="mb-6 inline-block text-sm text-muted transition-colors hover:text-ocean"
       >
         {T.back[lc]}
       </Link>
 
-      <header className="mb-8">
-        <div className="text-xs uppercase tracking-[0.3em] text-sky-300">
+      <header className="mb-6">
+        <div className="text-xs font-semibold uppercase tracking-widest text-ocean">
           {REGION_LABEL[spot.region][lc]}
         </div>
-        <h1 className="mt-2 text-4xl font-light sm:text-5xl">{name}</h1>
-        <p className="mt-1 text-sm text-zinc-500">{spot.nameEn}</p>
+        <h1 className="mt-1.5 text-4xl font-bold sm:text-5xl">{name}</h1>
+        <p className="mt-1 text-sm text-muted">{spot.nameEn}</p>
 
         {desc && (
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-400">
-            {desc}
-          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{desc}</p>
         )}
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {spot.trainAccessible && (
-            <span className="rounded-full bg-sky-500/10 px-3 py-1 text-xs text-sky-300">
+            <span className="rounded-full bg-sky-brand px-3 py-1 text-xs text-ocean">
               {T.train[lc]}
             </span>
           )}
           {spot.beginnerFriendly && (
-            <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
+            <span className="rounded-full bg-[#eef8f1] px-3 py-1 text-xs text-green-brand">
               {T.beginner[lc]}
             </span>
           )}
           {spot.boardTypes.map((b) => (
             <span
               key={b}
-              className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300"
+              className="rounded-full bg-line/60 px-3 py-1 text-xs text-ink"
             >
               {b}
             </span>
@@ -107,13 +109,13 @@ export default async function SpotDetailPage({
       </header>
 
       {interpretation && (
-        <div className="mb-8 rounded-xl border-l-2 border-sky-500/60 bg-sky-500/5 px-5 py-4 text-sky-100">
+        <div className="mb-6 rounded-xl bg-sky-brand px-5 py-4 text-navy">
           {interpretation}
         </div>
       )}
 
       {forecast ? (
-        <section className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <section className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <MetricCard
             label={T.wave[lc]}
             value={forecast.waveHeight?.toFixed(1)}
@@ -138,57 +140,37 @@ export default async function SpotDetailPage({
           />
         </section>
       ) : (
-        <p className="mb-10 rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 text-center text-sm text-zinc-500">
+        <p className="mb-8 rounded-lg border border-line bg-white p-4 text-center text-sm text-muted">
           {T.noForecast[lc]}
         </p>
       )}
 
       {(spot.optimalSwellDir || spot.offshoreWindDir) && (
-        <section className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <section className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {spot.optimalSwellDir && (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-              <div className="text-xs uppercase tracking-wider text-zinc-500">
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="text-xs uppercase tracking-wider text-muted">
                 {T.optimalSwell[lc]}
               </div>
-              <div className="mt-1 text-lg text-zinc-200">{spot.optimalSwellDir}</div>
+              <div className="mt-1 text-lg text-ink">{spot.optimalSwellDir}</div>
             </div>
           )}
           {spot.offshoreWindDir && (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-              <div className="text-xs uppercase tracking-wider text-zinc-500">
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="text-xs uppercase tracking-wider text-muted">
                 {T.offshoreWind[lc]}
               </div>
-              <div className="mt-1 text-lg text-zinc-200">{spot.offshoreWindDir}</div>
+              <div className="mt-1 text-lg text-ink">{spot.offshoreWindDir}</div>
             </div>
           )}
         </section>
       )}
 
       <section>
-        <h2 className="mb-4 border-b border-zinc-800 pb-2 text-lg tracking-wider text-zinc-300">
+        <h2 className="mb-4 border-b border-line pb-2 text-lg font-bold tracking-wider">
           {T.liveCams[lc]}
         </h2>
-        {spot.cams.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {spot.cams.map((cam) => (
-              <LiveCamEmbed
-                key={cam.id}
-                cam={{
-                  nameJa: cam.nameJa,
-                  nameEn: cam.nameEn,
-                  nameZh: cam.nameZh,
-                  youtubeVideoId: cam.youtubeVideoId,
-                  youtubeChannelId: cam.youtubeChannelId
-                }}
-                locale={lc}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-6 text-center text-sm text-zinc-500">
-            {T.noCams[lc]}
-          </p>
-        )}
+        <CamPicker cams={cams} locale={lc} />
       </section>
     </main>
   );
@@ -208,19 +190,19 @@ function MetricCard({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-      <div className="text-xs uppercase tracking-wider text-zinc-500">{label}</div>
+    <div className="rounded-xl border border-line bg-white p-4">
+      <div className="text-xs uppercase tracking-wider text-muted">{label}</div>
       <div
         className={
           accent
-            ? 'mt-1 text-3xl font-light text-sky-300'
-            : 'mt-1 text-3xl font-light text-zinc-200'
+            ? 'mt-1 text-3xl font-bold text-ocean'
+            : 'mt-1 text-3xl font-bold text-ink'
         }
       >
         {value ?? '—'}
-        <span className="ml-1 text-base text-zinc-500">{unit}</span>
+        <span className="ml-1 text-base text-muted">{unit}</span>
       </div>
-      {sub && <div className="mt-0.5 text-xs text-zinc-500">{sub}</div>}
+      {sub && <div className="mt-0.5 text-xs text-muted">{sub}</div>}
     </div>
   );
 }

@@ -4,8 +4,8 @@ import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {setRequestLocale} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
-import {Header} from '@/components/Header';
-import {Footer} from '@/components/Footer';
+import {SiteNav} from '@/components/SiteNav';
+import {SiteFooter} from '@/components/SiteFooter';
 import '../globals.css';
 
 const geistSans = Geist({variable: '--font-geist-sans', subsets: ['latin']});
@@ -78,11 +78,11 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black text-zinc-100">
+      <body className="min-h-full flex flex-col bg-sand text-ink">
         <NextIntlClientProvider>
-          <Header locale={lc} />
+          <SiteNav locale={lc} />
           <div className="flex-1">{children}</div>
-          <Footer locale={lc} />
+          <SiteFooter locale={lc} />
         </NextIntlClientProvider>
       </body>
     </html>

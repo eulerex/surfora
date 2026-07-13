@@ -1,0 +1,157 @@
+import Link from 'next/link';
+import type {Spot, Region} from '@prisma/client';
+import type {Forecast} from '@/lib/openMeteo';
+
+type Locale = 'ja' | 'zh' | 'en';
+
+const REGION_LABEL: Record<Region, Record<Locale, string>> = {
+  SHONAN: {ja: '湘南', zh: '湘南', en: 'Shonan'},
+  CHIBA: {ja: '千葉', zh: '千叶', en: 'Chiba'},
+  SHIZUOKA: {ja: '静岡', zh: '静冈', en: 'Shizuoka'},
+  MIYAZAKI: {ja: '宮崎', zh: '宫崎', en: 'Miyazaki'}
+};
+
+const T = {
+  score: {ja: '/100 推薦度', zh: '/100 推荐度', en: '/100 rating'},
+  train: {ja: '電車で行ける', zh: '电车可达', en: 'Train'},
+  car: {ja: '車必要', zh: '需开车', en: 'Car'},
+  beginner: {ja: '初心者向け', zh: '新手友好', en: 'Beginner'},
+  avoid: {ja: '今日は避けたい', zh: '今日避开', en: 'Skip today'},
+  boards: {ja: '板の種類', zh: '板型', en: 'Boards'},
+  wave: {ja: '波高', zh: '浪高', en: 'Wave'},
+  wind: {ja: '風', zh: '风', en: 'Wind'},
+  noForecast: {ja: '予報なし', zh: '暂无预报', en: 'No forecast'},
+  detail: {ja: '詳細を見る', zh: '看详情', en: 'Details'}
+} as const;
+
+export function scoreOf(f: Forecast | null): number {
+  if (!f) return 0;
+  const wave = f.waveHeight ?? 0;
+  const period = f.wavePeriod ?? 0;
+  const wind = f.windSpeed ?? 10;
+  const waveScore = wave > 0.3 && wave < 2.5 ? Math.min(50, wave * 30) : 0;
+  const periodScore = Math.min(30, period * 3);
+  const windPenalty = Math.max(0, (wind - 4) * 6);
+  return Math.max(0, Math.min(100, Math.round(waveScore + periodScore - windPenalty)));
+}
+
+function spotName(spot: Spot, locale: Locale): string {
+  if (locale === 'ja') return spot.nameJa;
+  if (locale === 'zh') return spot.nameZh ?? spot.nameJa;
+  return spot.nameEn;
+}
+
+export function SpotCard({
+  spot,
+  forecast,
+  interpretation,
+  locale
+}: {
+  spot: Spot;
+  forecast: Forecast | null;
+  interpretation: string | null;
+  locale: Locale;
+}) {
+  const score = scoreOf(forecast);
+  const scoreColor =
+    score >= 70
+      ? 'text-green-brand'
+      : score >= 50
+        ? 'text-yellow-brand'
+        : 'text-red-brand';
+
+  const isBad = score > 0 && score < 40;
+
+  return (
+    <Link
+      href={`/${locale}/spots/${spot.slug}`}
+      className="block h-full rounded-2xl border-[1.5px] border-line bg-white p-5 transition-shadow hover:border-ocean/40 hover:shadow-md"
+    >
+      <div className="mb-2.5 flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[17px] font-bold leading-tight">
+            {spotName(spot, locale)}
+            <span className="ml-1.5 text-xs font-normal text-muted">
+              {spot.nameEn} · {REGION_LABEL[spot.region][locale]}
+            </span>
+          </h3>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {spot.trainAccessible ? (
+              <span className="rounded-full bg-sky-brand px-2 py-0.5 text-[11px] text-ocean">
+                {T.train[locale]}
+              </span>
+            ) : (
+              <span className="rounded-full bg-sky-brand/60 px-2 py-0.5 text-[11px] text-ocean">
+                {T.car[locale]}
+              </span>
+            )}
+            {spot.beginnerFriendly && (
+              <span className="rounded-full bg-[#eef8f1] px-2 py-0.5 text-[11px] text-green-brand">
+                {T.beginner[locale]}
+              </span>
+            )}
+            {isBad && (
+              <span className="rounded-full bg-[#fdeaea] px-2 py-0.5 text-[11px] text-red-brand">
+                {T.avoid[locale]}
+              </span>
+            )}
+          </div>
+        </div>
+        {forecast && (
+          <div className="min-w-[68px] shrink-0 text-center">
+            <div className={`text-[26px] font-extrabold leading-none ${scoreColor}`}>
+              {score}
+            </div>
+            <div className="mt-0.5 text-[10px] text-muted">{T.score[locale]}</div>
+          </div>
+        )}
+      </div>
+
+      {interpretation && (
+        <div
+          className={
+            (isBad ? 'bg-[#fdeaea] ' : 'bg-sky-brand ') +
+            'my-2 rounded-lg px-3 py-2 text-[13px] text-navy'
+          }
+        >
+          {interpretation}
+        </div>
+      )}
+
+      <dl className="mt-3 grid grid-cols-2 gap-x-3.5 gap-y-1 text-[13px]">
+        <KV k={T.boards[locale]} v={spot.boardTypes.join(' / ') || '—'} />
+        <KV
+          k={T.wave[locale]}
+          v={
+            forecast?.waveHeight != null
+              ? `${forecast.waveHeight.toFixed(1)}m · ${forecast.wavePeriod?.toFixed(0) ?? '—'}s`
+              : T.noForecast[locale]
+          }
+        />
+        <KV
+          k={T.wind[locale]}
+          v={
+            forecast?.windSpeed != null
+              ? `${forecast.windSpeed.toFixed(1)} m/s`
+              : '—'
+          }
+        />
+      </dl>
+
+      <div className="mt-4 flex items-center justify-between border-t border-dashed border-line pt-2.5">
+        <span className="text-[13px] font-semibold text-ocean">
+          {T.detail[locale]} →
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function KV({k, v}: {k: string; v: string}) {
+  return (
+    <div className="flex items-baseline justify-between border-b border-dashed border-line py-0.5">
+      <span className="text-muted">{k}</span>
+      <span className="text-ink">{v}</span>
+    </div>
+  );
+}
