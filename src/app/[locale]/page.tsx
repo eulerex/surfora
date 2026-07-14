@@ -86,6 +86,7 @@ export default async function Home({
   const rows = spotsWithCams.map((s, i) => ({
     spot: s as Spot,
     forecast: forecasts[i],
+    hourly: hourlies[i],
     interpretation: interpretations[i],
     bestWindow: bestWindows[i],
     cams: s.cams as Cam[]

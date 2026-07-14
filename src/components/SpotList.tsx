@@ -2,16 +2,17 @@
 
 import type {Spot, Region} from '@prisma/client';
 import {useState} from 'react';
-import type {Forecast} from '@/lib/openMeteo';
+import type {Forecast, HourlyForecast} from '@/lib/openMeteo';
 import type {Window} from '@/lib/bestWindow';
-import {SpotCard} from './SpotCard';
-import {CamPicker, type CamData} from './CamPicker';
+import {SpotRow} from './SpotRow';
+import type {CamData} from './CamPicker';
 
 type Locale = 'ja' | 'zh' | 'en';
 
 type Row = {
   spot: Spot;
   forecast: Forecast | null;
+  hourly: HourlyForecast | null;
   interpretation: string | null;
   bestWindow: Window | null;
   cams: CamData[];
@@ -80,19 +81,16 @@ export function SpotList({
 
       <div className="flex flex-col gap-3.5">
         {filtered.map((r) => (
-          <div
+          <SpotRow
             key={r.spot.id}
-            className="grid gap-3 md:grid-cols-[1fr_400px] md:items-stretch"
-          >
-            <SpotCard
-              spot={r.spot}
-              forecast={r.forecast}
-              interpretation={r.interpretation}
-              bestWindow={r.bestWindow}
-              locale={locale}
-            />
-            <CamPicker cams={r.cams} locale={locale} />
-          </div>
+            spot={r.spot}
+            forecast={r.forecast}
+            hourly={r.hourly}
+            interpretation={r.interpretation}
+            bestWindow={r.bestWindow}
+            cams={r.cams}
+            locale={locale}
+          />
         ))}
         {filtered.length === 0 && (
           <div className="rounded-2xl border border-line bg-white p-8 text-center text-sm text-muted">
