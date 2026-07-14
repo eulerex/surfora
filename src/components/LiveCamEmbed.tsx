@@ -55,10 +55,12 @@ export function LiveCamEmbed({
       : null;
 
   const inner = src ? (
+    // pointer-events-none makes the iframe display-only so hovering never
+    // triggers YouTube's play/pause/share/history overlays.
     <iframe
       src={src}
       title={camName(cam, locale)}
-      className="h-full w-full"
+      className="pointer-events-none h-full w-full"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
     />
