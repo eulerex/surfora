@@ -199,11 +199,23 @@ async function main() {
       console.warn(`  ✗ cam ${cam.slug} skipped (no spot ${cam.spotSlug})`);
       continue;
     }
-    const {spotSlug: _ignored, ...camData} = cam;
+    // youtubeVideoId / youtubeChannelId are set manually via SQL after seed
+    // runs — they must NOT be reset on every container restart.
+    const {
+      spotSlug: _ignored,
+      youtubeVideoId,
+      youtubeChannelId,
+      ...updateOnly
+    } = cam;
     await prisma.cam.upsert({
       where: {slug: cam.slug},
-      update: {...camData, spotId: spot.id},
-      create: {...camData, spotId: spot.id}
+      update: {...updateOnly, spotId: spot.id},
+      create: {
+        ...updateOnly,
+        youtubeVideoId,
+        youtubeChannelId,
+        spotId: spot.id
+      }
     });
     console.log(`  ✓ ${cam.slug} → ${cam.spotSlug}`);
   }
