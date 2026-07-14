@@ -77,7 +77,7 @@ export function SpotCard({
     >
       <Link
         href={`/${locale}/spots/${spot.slug}`}
-        className="block h-full rounded-2xl border-[1.5px] border-line bg-white p-5 transition-shadow hover:border-ocean/40 hover:shadow-md"
+        className="flex h-full flex-col rounded-2xl border-[1.5px] border-line bg-white p-4 transition-shadow hover:border-ocean/40 hover:shadow-md"
       >
         <div className="mb-2.5 flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
@@ -154,10 +154,15 @@ export function SpotCard({
           />
         </dl>
 
-        <div className="mt-4 flex items-center justify-between border-t border-dashed border-line pt-2.5">
+        <div className="mt-auto flex items-center justify-between border-t border-dashed border-line pt-2.5">
           <span className="text-[13px] font-semibold text-ocean">
             {T.detail[locale]} →
           </span>
+          {forecast?.temperature != null && (
+            <span className="text-[12px] text-muted">
+              {T.temp[locale]} {forecast.temperature.toFixed(0)}°C
+            </span>
+          )}
         </div>
       </Link>
 
