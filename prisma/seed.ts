@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 const spots = [
   {
     slug: 'kugenuma',
+    sortOrder: 10,
     nameJa: '鵠沼',
     nameEn: 'Kugenuma',
     nameZh: '鹄沼',
@@ -22,6 +23,7 @@ const spots = [
   },
   {
     slug: 'tsujido',
+    sortOrder: 20,
     nameJa: '辻堂',
     nameEn: 'Tsujido',
     nameZh: '辻堂',
@@ -39,6 +41,7 @@ const spots = [
   },
   {
     slug: 'inamuragasaki',
+    sortOrder: 30,
     nameJa: '稲村ヶ崎',
     nameEn: 'Inamuragasaki',
     nameZh: '稻村崎',
@@ -56,6 +59,7 @@ const spots = [
   },
   {
     slug: 'shichirigahama',
+    sortOrder: 40,
     nameJa: '七里ヶ浜',
     nameEn: 'Shichirigahama',
     nameZh: '七里滨',
@@ -73,6 +77,7 @@ const spots = [
   },
   {
     slug: 'ichinomiya',
+    sortOrder: 50,
     nameJa: '一宮',
     nameEn: 'Ichinomiya',
     nameZh: '一宫',
@@ -90,6 +95,7 @@ const spots = [
   },
   {
     slug: 'torami',
+    sortOrder: 60,
     nameJa: '東浪見',
     nameEn: 'Torami',
     nameZh: '东浪见',
@@ -107,6 +113,7 @@ const spots = [
   },
   {
     slug: 'shizunami',
+    sortOrder: 70,
     nameJa: '静波',
     nameEn: 'Shizunami',
     nameZh: '静波',
@@ -124,6 +131,7 @@ const spots = [
   },
   {
     slug: 'kizakihama',
+    sortOrder: 80,
     nameJa: '木崎浜',
     nameEn: 'Kizakihama',
     nameZh: '木崎浜',

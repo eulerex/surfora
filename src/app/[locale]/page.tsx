@@ -50,6 +50,7 @@ export default async function Home({
   const lc = (['ja', 'zh', 'en'].includes(locale) ? locale : 'ja') as Locale;
 
   const spotsWithCams = await prisma.spot.findMany({
+    orderBy: [{sortOrder: 'asc'}, {id: 'asc'}],
     include: {cams: {where: {active: true}, orderBy: {id: 'asc'}}}
   });
 
