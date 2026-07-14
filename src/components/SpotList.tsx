@@ -3,6 +3,7 @@
 import type {Spot, Region} from '@prisma/client';
 import {useState} from 'react';
 import type {Forecast} from '@/lib/openMeteo';
+import type {Window} from '@/lib/bestWindow';
 import {SpotCard} from './SpotCard';
 import {CamPicker, type CamData} from './CamPicker';
 
@@ -12,6 +13,7 @@ type Row = {
   spot: Spot;
   forecast: Forecast | null;
   interpretation: string | null;
+  bestWindow: Window | null;
   cams: CamData[];
 };
 
@@ -86,6 +88,7 @@ export function SpotList({
               spot={r.spot}
               forecast={r.forecast}
               interpretation={r.interpretation}
+              bestWindow={r.bestWindow}
               locale={locale}
             />
             <CamPicker cams={r.cams} locale={locale} />

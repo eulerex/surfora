@@ -6,6 +6,7 @@ import type {Spot, Region} from '@prisma/client';
 import type {Forecast} from '@/lib/openMeteo';
 import {compassPoint} from '@/lib/openMeteo';
 import {scoreOf} from '@/lib/score';
+import {formatWindow, type Window} from '@/lib/bestWindow';
 
 type Locale = 'ja' | 'zh' | 'en';
 
@@ -22,9 +23,11 @@ const T = {
   car: {ja: '車必要', zh: '需开车', en: 'Car'},
   beginner: {ja: '初心者向け', zh: '新手友好', en: 'Beginner'},
   avoid: {ja: '今日は避けたい', zh: '今日避开', en: 'Skip today'},
+  bestTime: {ja: '最適時間', zh: '最佳时间', en: 'Best window'},
   boards: {ja: '板の種類', zh: '板型', en: 'Boards'},
   wave: {ja: '波高', zh: '浪高', en: 'Wave'},
   wind: {ja: '風', zh: '风', en: 'Wind'},
+  water: {ja: '水温', zh: '水温', en: 'Water'},
   noForecast: {ja: '予報なし', zh: '暂无预报', en: 'No forecast'},
   detail: {ja: '詳細を見る', zh: '看详情', en: 'Details'},
   optimalSwell: {ja: '最適スウェル向き', zh: '最优浪向', en: 'Best swell'},
@@ -50,11 +53,13 @@ export function SpotCard({
   spot,
   forecast,
   interpretation,
+  bestWindow,
   locale
 }: {
   spot: Spot;
   forecast: Forecast | null;
   interpretation: string | null;
+  bestWindow: Window | null;
   locale: Locale;
 }) {
   const [open, setOpen] = useState(false);
@@ -135,6 +140,11 @@ export function SpotCard({
         )}
 
         <dl className="mt-3 grid grid-cols-2 gap-x-3.5 gap-y-1 text-[13px]">
+          <KV
+            k={T.bestTime[locale]}
+            v={bestWindow ? formatWindow(bestWindow) : '—'}
+            highlight={!!bestWindow}
+          />
           <KV k={T.boards[locale]} v={spot.boardTypes.join(' / ') || '—'} />
           <KV
             k={T.wave[locale]}
@@ -152,17 +162,18 @@ export function SpotCard({
                 : '—'
             }
           />
+          {forecast?.seaTemp != null && (
+            <KV k={T.water[locale]} v={`${forecast.seaTemp.toFixed(1)}°C`} />
+          )}
+          {forecast?.temperature != null && (
+            <KV k={T.temp[locale]} v={`${forecast.temperature.toFixed(0)}°C`} />
+          )}
         </dl>
 
         <div className="mt-auto flex items-center justify-between border-t border-dashed border-line pt-2.5">
           <span className="text-[13px] font-semibold text-ocean">
             {T.detail[locale]} →
           </span>
-          {forecast?.temperature != null && (
-            <span className="text-[12px] text-muted">
-              {T.temp[locale]} {forecast.temperature.toFixed(0)}°C
-            </span>
-          )}
         </div>
       </Link>
 
@@ -201,11 +212,13 @@ export function SpotCard({
   );
 }
 
-function KV({k, v}: {k: string; v: string}) {
+function KV({k, v, highlight}: {k: string; v: string; highlight?: boolean}) {
   return (
     <div className="flex items-baseline justify-between border-b border-dashed border-line py-0.5">
       <span className="text-muted">{k}</span>
-      <span className="text-ink">{v}</span>
+      <span className={highlight ? 'font-semibold text-green-brand' : 'text-ink'}>
+        {v}
+      </span>
     </div>
   );
 }
