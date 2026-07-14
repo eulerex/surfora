@@ -98,7 +98,7 @@ export default async function Home({
     <>
       <Hero locale={lc} chips={chips} />
 
-      <div className="mx-auto max-w-6xl px-5">
+      <div className="mx-auto max-w-[1440px] px-5">
         <section id="spots" className="my-10">
           <h2 className="mb-1 text-xl font-bold">{H.spotsTitle[lc]}</h2>
           <p className="mb-5 text-[13.5px] text-muted">{H.spotsSub[lc]}</p>
