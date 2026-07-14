@@ -36,10 +36,22 @@ export function LiveCamEmbed({
   locale: Locale;
   hideHeader?: boolean;
 }) {
+  // Hide as much YouTube chrome as possible:
+  // - controls=0 removes progress bar / play-pause / gears / CC / volume
+  // - modestbranding=1 shrinks the YouTube logo
+  // - rel=0 kills the "up next" panel
+  // - iv_load_policy=3 removes annotations
+  // - fs=0 hides fullscreen button
+  // - disablekb=1 disables keyboard shortcuts
+  // - playsinline=1 keeps mobile in place
+  // The channel's own watermark (e.g. "湘南 鵠沼〜新江ノ島") is baked into
+  // the video stream — no URL param can remove that.
+  const params =
+    'autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&fs=0&disablekb=1&playsinline=1';
   const src = cam.youtubeVideoId
-    ? `https://www.youtube.com/embed/${cam.youtubeVideoId}?autoplay=1&mute=1&rel=0`
+    ? `https://www.youtube.com/embed/${cam.youtubeVideoId}?${params}`
     : cam.youtubeChannelId
-      ? `https://www.youtube.com/embed/live_stream?channel=${cam.youtubeChannelId}&autoplay=1&mute=1`
+      ? `https://www.youtube.com/embed/live_stream?channel=${cam.youtubeChannelId}&${params}`
       : null;
 
   const inner = src ? (
