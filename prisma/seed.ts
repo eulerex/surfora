@@ -161,6 +161,15 @@ const cams = [
     youtubeChannelId: null
   },
   {
+    slug: 'kugenuma-enoshima',
+    spotSlug: 'kugenuma',
+    nameJa: '江の島ズーム',
+    nameEn: 'Enoshima Zoom',
+    nameZh: '江之岛特写',
+    youtubeVideoId: 'ywXRfMLuw78',
+    youtubeChannelId: null
+  },
+  {
     slug: 'tsujido-main',
     spotSlug: 'tsujido',
     nameJa: '辻堂正面',
