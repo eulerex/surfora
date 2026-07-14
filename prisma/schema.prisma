@@ -42,12 +42,15 @@ model Spot {
   descEn            String?
   descZh            String?
 
+  sortOrder         Int      @default(1000)
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   cams              Cam[]
 
   @@index([region])
+  @@index([sortOrder])
 }
 
 model Cam {
