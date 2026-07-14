@@ -152,15 +152,6 @@ const cams = [
     youtubeChannelId: null
   },
   {
-    slug: 'kugenuma-monument',
-    spotSlug: 'kugenuma',
-    nameJa: '鵠沼 銅像前',
-    nameEn: 'Kugenuma Monument Front',
-    nameZh: '鹄沼 铜像前',
-    youtubeVideoId: null,
-    youtubeChannelId: null
-  },
-  {
     slug: 'kugenuma-enoshima',
     spotSlug: 'kugenuma',
     nameJa: '江の島ズーム',
