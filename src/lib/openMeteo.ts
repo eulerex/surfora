@@ -10,7 +10,20 @@ export type Forecast = {
   windSpeed: number | null;
   windDirection: number | null;
   temperature: number | null;
+  seaTemp: number | null;
   observedAt: string;
+};
+
+export type HourlyForecast = {
+  time: string[];
+  waveHeight: (number | null)[];
+  wavePeriod: (number | null)[];
+  waveDirection: (number | null)[];
+  windSpeed: (number | null)[];
+  windDirection: (number | null)[];
+  temperature: (number | null)[];
+  seaTemp: (number | null)[];
+  currentIndex: number;
 };
 
 type HourlyMarine = {
@@ -19,6 +32,7 @@ type HourlyMarine = {
     wave_height: (number | null)[];
     wave_period: (number | null)[];
     wave_direction: (number | null)[];
+    sea_surface_temperature: (number | null)[];
   };
 };
 
@@ -44,11 +58,11 @@ function tokyoHourKey(now: Date): string {
   return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}`;
 }
 
-export async function fetchForecast(
+export async function fetchHourly(
   lat: number,
   lng: number
-): Promise<Forecast | null> {
-  const marineUrl = `${MARINE_URL}?latitude=${lat}&longitude=${lng}&hourly=wave_height,wave_period,wave_direction&timezone=${TIMEZONE}&forecast_days=1`;
+): Promise<HourlyForecast | null> {
+  const marineUrl = `${MARINE_URL}?latitude=${lat}&longitude=${lng}&hourly=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=${TIMEZONE}&forecast_days=1`;
   const weatherUrl = `${WEATHER_URL}?latitude=${lat}&longitude=${lng}&hourly=wind_speed_10m,wind_direction_10m,temperature_2m&timezone=${TIMEZONE}&wind_speed_unit=ms&forecast_days=1`;
 
   try {
@@ -71,22 +85,20 @@ export async function fetchForecast(
     }
 
     const hourKey = tokyoHourKey(new Date());
-    const idx = marine.hourly.time.findIndex((t) => t.startsWith(hourKey));
-    if (idx === -1) {
-      console.error(
-        `[openMeteo] hourKey ${hourKey} not in times[0..${marine.hourly.time.length - 1}]: first=${marine.hourly.time[0]} last=${marine.hourly.time[marine.hourly.time.length - 1]}`
-      );
-      return null;
-    }
+    const currentIndex = marine.hourly.time.findIndex((t) =>
+      t.startsWith(hourKey)
+    );
 
     return {
-      waveHeight: marine.hourly.wave_height[idx] ?? null,
-      wavePeriod: marine.hourly.wave_period[idx] ?? null,
-      waveDirection: marine.hourly.wave_direction[idx] ?? null,
-      windSpeed: weather.hourly.wind_speed_10m[idx] ?? null,
-      windDirection: weather.hourly.wind_direction_10m[idx] ?? null,
-      temperature: weather.hourly.temperature_2m[idx] ?? null,
-      observedAt: marine.hourly.time[idx]
+      time: marine.hourly.time,
+      waveHeight: marine.hourly.wave_height,
+      wavePeriod: marine.hourly.wave_period,
+      waveDirection: marine.hourly.wave_direction,
+      seaTemp: marine.hourly.sea_surface_temperature ?? [],
+      windSpeed: weather.hourly.wind_speed_10m,
+      windDirection: weather.hourly.wind_direction_10m,
+      temperature: weather.hourly.temperature_2m,
+      currentIndex
     };
   } catch (e) {
     console.error(
@@ -95,6 +107,25 @@ export async function fetchForecast(
     );
     return null;
   }
+}
+
+export async function fetchForecast(
+  lat: number,
+  lng: number
+): Promise<Forecast | null> {
+  const h = await fetchHourly(lat, lng);
+  if (!h || h.currentIndex === -1) return null;
+  const i = h.currentIndex;
+  return {
+    waveHeight: h.waveHeight[i] ?? null,
+    wavePeriod: h.wavePeriod[i] ?? null,
+    waveDirection: h.waveDirection[i] ?? null,
+    windSpeed: h.windSpeed[i] ?? null,
+    windDirection: h.windDirection[i] ?? null,
+    temperature: h.temperature[i] ?? null,
+    seaTemp: h.seaTemp[i] ?? null,
+    observedAt: h.time[i]
+  };
 }
 
 const COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',

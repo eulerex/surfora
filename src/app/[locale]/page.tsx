@@ -1,7 +1,8 @@
 import type {Region, Spot, Cam} from '@prisma/client';
 import {setRequestLocale} from 'next-intl/server';
 import {prisma} from '@/lib/prisma';
-import {fetchForecast, type Forecast} from '@/lib/openMeteo';
+import {fetchHourly, type Forecast} from '@/lib/openMeteo';
+import {bestWindow} from '@/lib/bestWindow';
 import {interpretSpot} from '@/lib/interpretSpot';
 import {Hero, type HeroChip} from '@/components/Hero';
 import {SpotList} from '@/components/SpotList';
@@ -14,9 +15,9 @@ type Locale = 'ja' | 'zh' | 'en';
 const H = {
   spotsTitle: {ja: '今日のポイント', zh: '今日浪点', en: "Today's spots"},
   spotsSub: {
-    ja: '既定は湘南。地域タブで切り替え。カードをクリックすると詳細ページへ。',
-    zh: '默认湘南，用地区标签切换。点卡片进详情页。',
-    en: 'Shonan by default. Switch region via tabs. Click a card for the detail page.'
+    ja: '既定は湘南。地域タブで切り替え。カードにマウスを乗せると詳細が浮上。',
+    zh: '默认湘南，用地区标签切换。鼠标停在卡片上看详情。',
+    en: 'Shonan by default. Switch region via tabs. Hover a card for details.'
   },
   trend: {ja: '今日の走勢', zh: '今日走势', en: "Today's trend"},
   trendSub: {
@@ -52,8 +53,27 @@ export default async function Home({
     include: {cams: {where: {active: true}, orderBy: {id: 'asc'}}}
   });
 
-  const forecasts = await Promise.all(
-    spotsWithCams.map((s) => fetchForecast(s.latitude, s.longitude))
+  const hourlies = await Promise.all(
+    spotsWithCams.map((s) => fetchHourly(s.latitude, s.longitude))
+  );
+
+  const forecasts: (Forecast | null)[] = hourlies.map((h) => {
+    if (!h || h.currentIndex === -1) return null;
+    const i = h.currentIndex;
+    return {
+      waveHeight: h.waveHeight[i] ?? null,
+      wavePeriod: h.wavePeriod[i] ?? null,
+      waveDirection: h.waveDirection[i] ?? null,
+      windSpeed: h.windSpeed[i] ?? null,
+      windDirection: h.windDirection[i] ?? null,
+      temperature: h.temperature[i] ?? null,
+      seaTemp: h.seaTemp[i] ?? null,
+      observedAt: h.time[i]
+    };
+  });
+
+  const bestWindows = hourlies.map((h, i) =>
+    h ? bestWindow(h, spotsWithCams[i].offshoreWindDir) : null
   );
 
   const interpretations = await Promise.all(
@@ -67,6 +87,7 @@ export default async function Home({
     spot: s as Spot,
     forecast: forecasts[i],
     interpretation: interpretations[i],
+    bestWindow: bestWindows[i],
     cams: s.cams as Cam[]
   }));
 
