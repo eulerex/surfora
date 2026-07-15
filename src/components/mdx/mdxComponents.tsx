@@ -63,7 +63,22 @@ const baseComponents: MDXRemoteProps['components'] = {
       loading="lazy"
       {...props}
     />
-  )
+  ),
+
+  table: (props) => (
+    <div className="my-6 overflow-x-auto rounded-xl border border-line">
+      <table className="w-full border-collapse text-sm" {...props} />
+    </div>
+  ),
+  thead: (props) => <thead className="bg-sky-brand" {...props} />,
+  tbody: (props) => <tbody {...props} />,
+  tr: (props) => (
+    <tr className="border-b border-line last:border-b-0 hover:bg-sky-brand/30" {...props} />
+  ),
+  th: (props) => (
+    <th className="px-3 py-2.5 text-left font-semibold text-navy" {...props} />
+  ),
+  td: (props) => <td className="px-3 py-2.5 text-ink align-top" {...props} />
 };
 
 export function makeLessonMdxComponents(
