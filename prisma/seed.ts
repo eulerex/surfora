@@ -169,6 +169,15 @@ const cams = [
     youtubeChannelId: null
   },
   {
+    slug: 'shichirigahama-minehills',
+    spotSlug: 'shichirigahama',
+    nameJa: '七里ヶ浜 峰ヒルズ視点',
+    nameEn: 'Shichirigahama Minehills view',
+    nameZh: '七里滨 峰之丘视角',
+    youtubeVideoId: 'LiBT8ZwoxMk',
+    youtubeChannelId: null
+  },
+  {
     slug: 'tsujido-main',
     spotSlug: 'tsujido',
     nameJa: '辻堂正面',
