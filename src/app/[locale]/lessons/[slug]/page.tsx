@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {notFound} from 'next/navigation';
 import {setRequestLocale} from 'next-intl/server';
 import {MDXRemote} from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 import {getLesson, getAllSlugs, type Locale} from '@/lib/lessons';
 import {makeLessonMdxComponents} from '@/components/mdx/mdxComponents';
 
@@ -70,7 +71,15 @@ export default async function LessonPage({
       </header>
 
       <article className="text-[15.5px]">
-        <MDXRemote source={lesson.content} components={components} />
+        <MDXRemote
+          source={lesson.content}
+          components={components}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm]
+            }
+          }}
+        />
       </article>
     </main>
   );
