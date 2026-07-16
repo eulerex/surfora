@@ -12,6 +12,15 @@ model Ping {
   createdAt DateTime @default(now())
 }
 
+// Simple key-value counter table. Currently used for the homepage
+// visit counter (key = "home_visits"). Kept generic so we can pile
+// more site-wide counters on top without a schema change.
+model SiteStat {
+  key       String   @id
+  value     BigInt   @default(0)
+  updatedAt DateTime @updatedAt
+}
+
 enum Region {
   SHONAN
   CHIBA

@@ -37,8 +37,32 @@ const H = {
     zh: '登录后按你的水平、板型、出发地排序（即将上线）',
     en: 'Sorted by your level, board, and departure (coming soon)'
   },
-  comingSoon: {ja: '近日追加', zh: '即将上线', en: 'Coming soon'}
+  comingSoon: {ja: '近日追加', zh: '即将上线', en: 'Coming soon'},
+  visitCount: {
+    ja: '訪問数',
+    zh: '访问次数',
+    en: 'Visits'
+  }
 } as const;
+
+const HOME_VISITS_KEY = 'home_visits';
+
+// Counts every homepage render. Bots and refreshes inflate the number,
+// but it's a personal-site vanity counter — accuracy is a
+// nice-to-have, not the goal.
+async function bumpHomeVisits(): Promise<number> {
+  try {
+    const row = await prisma.siteStat.upsert({
+      where: {key: HOME_VISITS_KEY},
+      update: {value: {increment: 1}},
+      create: {key: HOME_VISITS_KEY, value: BigInt(1)}
+    });
+    return Number(row.value);
+  } catch (e) {
+    console.error('[visits] upsert failed', e);
+    return 0;
+  }
+}
 
 export default async function Home({
   params
@@ -111,6 +135,7 @@ export default async function Home({
     });
 
   const chips = buildHeroChips(rows, lc);
+  const visitCount = await bumpHomeVisits();
 
   return (
     <>
@@ -148,6 +173,15 @@ export default async function Home({
             </div>
           </div>
         </section>
+
+        <div className="mb-8 border-t border-line pt-5 text-center text-xs text-muted">
+          {H.visitCount[lc]}:{' '}
+          <span className="font-mono font-semibold text-ink">
+            {visitCount.toLocaleString(
+              lc === 'ja' ? 'ja-JP' : lc === 'zh' ? 'zh-CN' : 'en-US'
+            )}
+          </span>
+        </div>
       </div>
     </>
   );
