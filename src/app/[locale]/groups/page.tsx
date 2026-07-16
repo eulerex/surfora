@@ -1,41 +1,26 @@
+import Link from 'next/link';
 import {setRequestLocale} from 'next-intl/server';
-import {ComingSoonPage} from '@/components/ComingSoonPage';
+import {CommunityCard} from '@/components/CommunityCard';
+import {getAllCommunities} from '@/lib/communities';
 
 type Locale = 'ja' | 'zh' | 'en';
 
-const CONTENT = {
-  ja: {
-    title: 'グループ',
-    description:
-      'ポイント別・レベル別のサーファー同士の輪。今日一緒に入る仲間を探したり、常連グループに参加したり、送迎シェアを組んだり。',
-    points: [
-      'ポイント別コミュニティ（鵠沼、辻堂、一宮…）',
-      'レベル別グループ（初心者・中級・上級）',
-      '今日一緒に入る「今から誘う」フィード',
-      '車の相乗り・送迎シェア'
-    ]
+const T = {
+  title: {ja: 'グループ', zh: '圈子', en: 'Groups'},
+  subtitle: {
+    ja: 'ポイント別・レベル別のサーファー同士の輪。今日一緒に入る仲間、常連グループ、送迎シェアなど。',
+    zh: '按浪点、按水平的冲浪圈子。今天一起下水、常驻小圈、拼车拼行程。',
+    en: 'Spot- and level-based circles. Find a session buddy for today, join a regulars group, share rides.'
   },
-  zh: {
-    title: '圈子',
-    description:
-      '按浪点、按水平的冲浪圈子。找今天一起下水的伙伴、加入常驻小圈、拼车拼行程。',
-    points: [
-      '按浪点分（鵠沼、辻堂、一宫…）',
-      '按水平分（新手 / 中级 / 上级）',
-      '"今天有人一起吗"实时约浪',
-      '车拼、住宿拼'
-    ]
+  empty: {
+    ja: 'まだ登録されているグループはありません。',
+    zh: '暂时还没有圈子。',
+    en: 'No groups registered yet.'
   },
-  en: {
-    title: 'Groups',
-    description:
-      'Spot- and level-based circles. Find a session buddy for today, join a regulars group, share rides.',
-    points: [
-      'Per-spot communities (Kugenuma, Tsujido, Ichinomiya…)',
-      'Level-based groups (beginner / intermediate / advanced)',
-      '"Who\'s going today?" real-time board',
-      'Ride shares & road trips'
-    ]
+  spotLink: {
+    ja: 'ポイントを見る',
+    zh: '看浪点',
+    en: 'View spot'
   }
 } as const;
 
@@ -47,14 +32,40 @@ export default async function GroupsPage({
   const {locale} = await params;
   setRequestLocale(locale);
   const lc = (['ja', 'zh', 'en'].includes(locale) ? locale : 'ja') as Locale;
-  const c = CONTENT[lc];
+
+  const communities = getAllCommunities();
+
   return (
-    <ComingSoonPage
-      emoji="👥"
-      title={c.title}
-      description={c.description}
-      points={[...c.points]}
-      locale={lc}
-    />
+    <main className="mx-auto max-w-4xl px-6 py-14">
+      <header className="mb-8">
+        <div className="mb-2 inline-block rounded-full bg-navy/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-navy">
+          👥 {T.title[lc]}
+        </div>
+        <h1 className="text-4xl font-bold">{T.title[lc]}</h1>
+        <p className="mt-2 text-muted">{T.subtitle[lc]}</p>
+      </header>
+
+      {communities.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-line bg-white p-10 text-center text-muted">
+          {T.empty[lc]}
+        </div>
+      ) : (
+        <ul className="space-y-6">
+          {communities.map((community) => (
+            <li key={community.slug}>
+              <CommunityCard community={community} locale={lc} />
+              <div className="mt-2 text-right">
+                <Link
+                  href={`/${lc}/spots/${community.spotSlug}`}
+                  className="text-sm text-ocean transition-colors hover:underline"
+                >
+                  {T.spotLink[lc]} →
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
   );
 }

@@ -1,5 +1,6 @@
 export type Community = {
   slug: string;
+  spotSlug: string;
   name: string;
   memberCount: number;
   leaderImage: string;
@@ -12,6 +13,7 @@ export type Community = {
 export const COMMUNITIES: Record<string, Community> = {
   kugenuma: {
     slug: 'kugenuma',
+    spotSlug: 'kugenuma',
     name: '🏄 冲浪 🏄 🇯🇵',
     memberCount: 195,
     leaderImage: '/community/kugenuma-leader.jpg',
@@ -24,4 +26,8 @@ export const COMMUNITIES: Record<string, Community> = {
 
 export function getCommunity(slug: string): Community | null {
   return COMMUNITIES[slug] ?? null;
+}
+
+export function getAllCommunities(): Community[] {
+  return Object.values(COMMUNITIES);
 }

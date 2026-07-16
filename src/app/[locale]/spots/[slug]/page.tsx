@@ -5,8 +5,6 @@ import {prisma} from '@/lib/prisma';
 import {fetchForecast, compassPoint} from '@/lib/openMeteo';
 import {interpretSpot} from '@/lib/interpretSpot';
 import {CamPicker, type CamData} from '@/components/CamPicker';
-import {CommunityCard} from '@/components/CommunityCard';
-import {getCommunity} from '@/lib/communities';
 import type {Region} from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
@@ -174,13 +172,6 @@ export default async function SpotDetailPage({
         </h2>
         <CamPicker cams={cams} locale={lc} />
       </section>
-
-      {(() => {
-        const community = getCommunity(spot.slug);
-        return community ? (
-          <CommunityCard community={community} locale={lc} />
-        ) : null;
-      })()}
     </main>
   );
 }
