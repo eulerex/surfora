@@ -5,7 +5,8 @@ type Locale = 'ja' | 'zh' | 'en';
 const T = {
   section: {ja: 'コミュニティ', zh: '圈子', en: 'Community'},
   members: {ja: 'メンバー', zh: '成员', en: 'Members'},
-  leader: {ja: 'オーナー', zh: '群主', en: 'Group leader'}
+  leader: {ja: 'オーナー', zh: '群主', en: 'Group leader'},
+  wechat: {ja: 'WeChat', zh: '微信', en: 'WeChat'}
 } as const;
 
 function localizedDesc(c: Community, locale: Locale): string {
@@ -72,6 +73,14 @@ export function CommunityCard({
               <div className="text-sm font-semibold text-ink">
                 {community.leaderName}
               </div>
+              {community.leaderWechat && (
+                <div className="mt-1 text-[11px] text-muted">
+                  {T.wechat[locale]}:{' '}
+                  <span className="font-mono tracking-wider text-ink">
+                    {community.leaderWechat}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
