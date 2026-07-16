@@ -49,10 +49,17 @@ export default async function Home({
   setRequestLocale(locale);
   const lc = (['ja', 'zh', 'en'].includes(locale) ? locale : 'ja') as Locale;
 
-  const spotsWithCams = await prisma.spot.findMany({
-    orderBy: [{sortOrder: 'asc'}, {id: 'asc'}],
-    include: {cams: {where: {active: true}, orderBy: {id: 'asc'}}}
-  });
+  // Slugs listed here are pulled from the landing page's spot rail but
+  // remain in the DB. Cheap toggle for hiding rows without a schema
+  // change — flip the slug in/out of the set to show/hide.
+  const HIDDEN_SPOT_SLUGS = new Set(['kugenuma']);
+
+  const spotsWithCams = (
+    await prisma.spot.findMany({
+      orderBy: [{sortOrder: 'asc'}, {id: 'asc'}],
+      include: {cams: {where: {active: true}, orderBy: {id: 'asc'}}}
+    })
+  ).filter((s) => !HIDDEN_SPOT_SLUGS.has(s.slug));
 
   const hourlies = await Promise.all(
     spotsWithCams.map((s) => fetchHourly(s.latitude, s.longitude))
