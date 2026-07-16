@@ -148,6 +148,24 @@ const spots = [
     descZh: '大矶町的海岸。JR 大矶站徒步 10 分钟。湘南西端、人少、适合新手。'
   },
   {
+    slug: 'shirahama',
+    sortOrder: 75,
+    nameJa: '白浜',
+    nameEn: 'Shirahama',
+    nameZh: '白滨',
+    region: Region.SHIZUOKA,
+    latitude: 34.688,
+    longitude: 138.964,
+    trainAccessible: false,
+    beginnerFriendly: true,
+    boardTypes: ['Longboard', 'Funboard', 'Shortboard'],
+    optimalSwellDir: '南',
+    offshoreWindDir: '西',
+    descJa: '伊豆・下田を代表するビーチブレイク。白砂と透明度の高い海。台風スウェルではパワーのある波が入る。',
+    descEn: 'Izu peninsula\'s iconic beach break in Shimoda. White sand, clear water; powerful when typhoon swells hit.',
+    descZh: '伊豆·下田代表性沙滩浪点。白沙、水质通透，台风浪期波形有力。'
+  },
+  {
     slug: 'kizakihama',
     sortOrder: 80,
     nameJa: '木崎浜',
@@ -220,6 +238,15 @@ const cams = [
     nameEn: 'Tsujido Beach',
     nameZh: '辻堂海水浴场',
     youtubeVideoId: 'ceBqnSf8aRQ',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'shirahama-chuo',
+    spotSlug: 'shirahama',
+    nameJa: '白浜中央ビーチ',
+    nameEn: 'Shirahama Chuo Beach',
+    nameZh: '白滨中央海滩',
+    youtubeVideoId: 'mWu0lcIsEX8',
     youtubeChannelId: null
   },
   {
