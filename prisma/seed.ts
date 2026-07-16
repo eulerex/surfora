@@ -223,15 +223,6 @@ const cams = [
     youtubeChannelId: null
   },
   {
-    slug: 'shichirigahama-minehills',
-    spotSlug: 'shichirigahama',
-    nameJa: '七里ヶ浜 峰ヒルズ視点',
-    nameEn: 'Shichirigahama Minehills view',
-    nameZh: '七里滨 峰之丘视角',
-    youtubeVideoId: 'LiBT8ZwoxMk',
-    youtubeChannelId: null
-  },
-  {
     slug: 'shichirigahama-kamakura-koukou',
     spotSlug: 'shichirigahama',
     nameJa: '鎌倉高校前',
@@ -268,15 +259,6 @@ const cams = [
     youtubeChannelId: null
   },
   {
-    slug: 'oiso-main',
-    spotSlug: 'oiso',
-    nameJa: '大磯海岸',
-    nameEn: 'Oiso Beach',
-    nameZh: '大矶海岸',
-    youtubeVideoId: 'WV9DtVXgwqE',
-    youtubeChannelId: null
-  },
-  {
     slug: 'tsujido-main',
     spotSlug: 'tsujido',
     nameJa: '辻堂正面',
@@ -296,9 +278,17 @@ const cams = [
   }
 ];
 
-// Cams / spots that used to exist but have been renamed or promoted.
+// Cams / spots that used to exist but have been renamed, promoted, or
+// removed because their upstream YouTube video blocked embedding.
 // Deleted at the top of every seed so stale rows don't linger in prod.
-const staleCamSlugs = ['kugenuma-koshigoe'];
+const staleCamSlugs = [
+  'kugenuma-koshigoe',
+  // Video owners disabled embed (oEmbed returns 401), so the iframe
+  // shows "视频所有者已禁止在其他网站上播放此视频". Removed until we
+  // find replacement live sources for the same beach.
+  'shichirigahama-minehills',
+  'oiso-main'
+];
 
 async function main() {
   if (staleCamSlugs.length > 0) {
