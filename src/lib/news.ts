@@ -25,7 +25,15 @@ export type NewsTag =
   | 'general';
 
 const RSS_TIMEOUT_MS = 8000;
-const RSS_CACHE_SECONDS = 900; // 15min — balances Google News refresh cadence and per-visitor freshness
+// News aggregate is cached for 24h — first visitor after the TTL
+// expires triggers one refresh, then everyone else within the window
+// reads the same snapshot. This gives us "roughly once a day" without
+// running an external cron.
+const NEWS_CACHE_SECONDS = 86400;
+// Per-fetch revalidate matches the aggregate TTL — belt-and-braces so
+// nothing goes stale beyond a day even if the aggregate cache is
+// invalidated separately.
+const RSS_CACHE_SECONDS = NEWS_CACHE_SECONDS;
 
 type Query = {
   tag: NewsTag;
@@ -147,7 +155,7 @@ export type NewsFeed = {
 };
 
 /** Aggregate all queries, filter for relevance, dedupe by link, sort newest first. */
-export async function fetchNews(limit = 30): Promise<NewsFeed> {
+async function assembleNewsFeed(limit: number): Promise<NewsFeed> {
   const allBatches = await Promise.all(QUERIES.map(fetchOne));
   const merged: NewsItem[] = allBatches.flat().filter(isRelevant);
 
@@ -168,6 +176,23 @@ export async function fetchNews(limit = 30): Promise<NewsFeed> {
     .slice(0, limit);
 
   return {items, fetchedAt: new Date().toISOString()};
+}
+
+/**
+ * Cached wrapper — the aggregated feed (and its fetchedAt timestamp)
+ * is frozen for 24h. Only the first visitor after cache expiry pays
+ * the RSS + relevance filtering cost; every other visitor within the
+ * window sees the exact same snapshot, and the displayed
+ * "last updated" timestamp reflects when the snapshot was actually
+ * built rather than when the request came in.
+ */
+export async function fetchNews(limit = 30): Promise<NewsFeed> {
+  const cached = unstable_cache(
+    () => assembleNewsFeed(limit),
+    ['news-feed', String(limit)],
+    {revalidate: NEWS_CACHE_SECONDS, tags: ['news-feed']}
+  );
+  return cached();
 }
 
 type Locale = 'ja' | 'zh' | 'en';
