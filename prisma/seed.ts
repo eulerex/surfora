@@ -130,6 +130,24 @@ const spots = [
     descZh: '静冈的代表性沙滩浪点。下午西风常起，早上更佳。'
   },
   {
+    slug: 'oiso',
+    sortOrder: 45,
+    nameJa: '大磯',
+    nameEn: 'Oiso',
+    nameZh: '大矶',
+    region: Region.SHONAN,
+    latitude: 35.303,
+    longitude: 139.303,
+    trainAccessible: true,
+    beginnerFriendly: true,
+    boardTypes: ['Longboard', 'Funboard'],
+    optimalSwellDir: '南',
+    offshoreWindDir: '北',
+    descJa: '大磯町の海岸。JR大磯駅から徒歩10分。湘南の西端で人が少なく、初心者にも向く。',
+    descEn: 'A quieter Shonan beach in Oiso town, ~10 min walk from JR Oiso Station. Less crowded than Kugenuma/Tsujido.',
+    descZh: '大矶町的海岸。JR 大矶站徒步 10 分钟。湘南西端、人少、适合新手。'
+  },
+  {
     slug: 'kizakihama',
     sortOrder: 80,
     nameJa: '木崎浜',
@@ -175,6 +193,42 @@ const cams = [
     nameEn: 'Shichirigahama Minehills view',
     nameZh: '七里滨 峰之丘视角',
     youtubeVideoId: 'LiBT8ZwoxMk',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'shichirigahama-kamakura-koukou',
+    spotSlug: 'shichirigahama',
+    nameJa: '鎌倉高校前',
+    nameEn: 'Kamakura Koko Mae (Slam Dunk crossing)',
+    nameZh: '镰仓高校前',
+    youtubeVideoId: 'wq5J3SZSdX8',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'kugenuma-koshigoe',
+    spotSlug: 'kugenuma',
+    nameJa: '江の島 腰越海岸',
+    nameEn: 'Enoshima Koshigoe Beach',
+    nameZh: '江之岛 腰越海岸',
+    youtubeVideoId: 'ESsZ9iB7tz0',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'tsujido-beach',
+    spotSlug: 'tsujido',
+    nameJa: '辻堂海水浴場',
+    nameEn: 'Tsujido Beach',
+    nameZh: '辻堂海水浴场',
+    youtubeVideoId: 'ceBqnSf8aRQ',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'oiso-main',
+    spotSlug: 'oiso',
+    nameJa: '大磯海岸',
+    nameEn: 'Oiso Beach',
+    nameZh: '大矶海岸',
+    youtubeVideoId: 'WV9DtVXgwqE',
     youtubeChannelId: null
   },
   {
