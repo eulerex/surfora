@@ -258,6 +258,15 @@ const cams = [
     youtubeVideoId: 'mWu0lcIsEX8',
     youtubeChannelId: null
   },
+  {
+    slug: 'shirahama-ohama',
+    spotSlug: 'shirahama',
+    nameJa: '白浜大浜海水浴場',
+    nameEn: 'Shirahama Ohama Beach',
+    nameZh: '白滨大滨海水浴场',
+    youtubeVideoId: '_Upz1dlQgpg',
+    youtubeChannelId: null
+  },
 ];
 
 // Cams / spots that used to exist but have been renamed, promoted, or
