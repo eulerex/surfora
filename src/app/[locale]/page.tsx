@@ -84,14 +84,24 @@ export default async function Home({
     })
   );
 
-  const rows = spotsWithCams.map((s, i) => ({
-    spot: s as Spot,
-    forecast: forecasts[i],
-    hourly: hourlies[i],
-    interpretation: interpretations[i],
-    bestWindow: bestWindows[i],
-    cams: s.cams as Cam[]
-  }));
+  const rows = spotsWithCams
+    .map((s, i) => ({
+      spot: s as Spot,
+      forecast: forecasts[i],
+      hourly: hourlies[i],
+      interpretation: interpretations[i],
+      bestWindow: bestWindows[i],
+      cams: s.cams as Cam[]
+    }))
+    // Spots with at least one playable live cam surface first; empty-cam
+    // spots sink to the bottom of their region. Keeps the busy rows
+    // grouped and the placeholder cards clustered at the end.
+    .sort((a, b) => {
+      const aHas = a.cams.some((c) => c.youtubeVideoId || c.youtubeChannelId);
+      const bHas = b.cams.some((c) => c.youtubeVideoId || c.youtubeChannelId);
+      if (aHas !== bHas) return aHas ? -1 : 1;
+      return a.spot.sortOrder - b.spot.sortOrder;
+    });
 
   const chips = buildHeroChips(rows, lc);
 

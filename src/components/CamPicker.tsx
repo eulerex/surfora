@@ -43,10 +43,22 @@ export function CamPicker({
 }) {
   const [selectedId, setSelectedId] = useState(cams[0]?.id ?? -1);
 
+  // Render two direct grid children (via display:contents) so the parent
+  // grid can size the video card and the tab column independently. This
+  // keeps the video area's width identical across empty / single-cam /
+  // multi-cam rows — only the tab column widens for multi-cam.
   if (cams.length === 0) {
     return (
-      <div className="flex aspect-video items-center justify-center rounded-xl border border-line bg-white text-center text-xs text-grey-brand">
-        <span className="px-6">{T.noCams[locale]}</span>
+      <div className="contents">
+        <div className="min-w-0 overflow-hidden rounded-xl border border-line bg-white">
+          <div className="border-b border-line bg-grey-brand/10 px-3 py-1.5 text-xs text-muted">
+            📹 —
+          </div>
+          <div className="flex aspect-video items-center justify-center bg-white text-center text-xs text-grey-brand">
+            <span className="px-6">{T.noCams[locale]}</span>
+          </div>
+        </div>
+        <div className="hidden md:block" />
       </div>
     );
   }
@@ -56,9 +68,8 @@ export function CamPicker({
   const showTabs = cams.length > 1;
 
   return (
-    <div className="flex gap-2">
-      {/* Video card — flex-1 so it fills whatever cam column gives it */}
-      <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-line bg-white">
+    <div className="contents">
+      <div className="min-w-0 overflow-hidden rounded-xl border border-line bg-white">
         <div className="flex items-center justify-between border-b border-line bg-sky-brand px-3 py-1.5 text-xs">
           <span className="truncate font-medium text-ocean">
             📹 {camName(current, locale)}
@@ -89,8 +100,7 @@ export function CamPicker({
         </div>
       </div>
 
-      {/* Vertical camera-position tabs on the right */}
-      {showTabs && (
+      {showTabs ? (
         <div className="flex w-[104px] shrink-0 flex-col gap-1.5">
           {cams.map((c) => {
             const isActive = c.id === current.id;
@@ -129,6 +139,8 @@ export function CamPicker({
             );
           })}
         </div>
+      ) : (
+        <div className="hidden md:block" />
       )}
     </div>
   );
