@@ -258,24 +258,6 @@ const cams = [
     youtubeVideoId: 'mWu0lcIsEX8',
     youtubeChannelId: null
   },
-  {
-    slug: 'tsujido-main',
-    spotSlug: 'tsujido',
-    nameJa: '辻堂正面',
-    nameEn: 'Tsujido Main',
-    nameZh: '辻堂正面',
-    youtubeVideoId: null,
-    youtubeChannelId: null
-  },
-  {
-    slug: 'ichinomiya-cam',
-    spotSlug: 'ichinomiya',
-    nameJa: '一宮海岸',
-    nameEn: 'Ichinomiya Beach',
-    nameZh: '一宫海岸',
-    youtubeVideoId: null,
-    youtubeChannelId: null
-  }
 ];
 
 // Cams / spots that used to exist but have been renamed, promoted, or
@@ -287,7 +269,13 @@ const staleCamSlugs = [
   // shows "视频所有者已禁止在其他网站上播放此视频". Removed until we
   // find replacement live sources for the same beach.
   'shichirigahama-minehills',
-  'oiso-main'
+  'oiso-main',
+  // Empty placeholder cams with no video ID. When a spot has zero cams
+  // the UI falls to "此浪点尚未登记直播摄像头", which reads cleaner than
+  // an always-offline tab sitting next to a working one (辻堂正面 vs
+  // 辻堂海水浴場). Re-add as fresh entries when we find live sources.
+  'tsujido-main',
+  'ichinomiya-cam'
 ];
 
 async function main() {
