@@ -5,6 +5,7 @@ export type Community = {
   memberCount: number;
   leaderImage: string;
   leaderName: string;
+  leaderWechat: string | null;
   descJa: string;
   descEn: string;
   descZh: string;
@@ -17,7 +18,8 @@ export const COMMUNITIES: Record<string, Community> = {
     name: '🏄 冲浪 🏄 🇯🇵',
     memberCount: 195,
     leaderImage: '/community/kugenuma-leader.jpg',
-    leaderName: 'Riku',
+    leaderName: '米',
+    leaderWechat: '*****',
     descJa: '鵠沼を拠点にする在日サーファーコミュニティ。週末のセッション、初心者ガイド、波情報の共有まで。',
     descEn: 'Kugenuma-based surfer community. Weekend sessions, beginner guides, wave-info sharing.',
     descZh: '鹄沼为主的在日冲浪社群，周末冲浪、新手带练、浪况分享。'
