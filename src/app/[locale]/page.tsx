@@ -52,7 +52,7 @@ export default async function Home({
   // Slugs listed here are pulled from the landing page's spot rail but
   // remain in the DB. Cheap toggle for hiding rows without a schema
   // change — flip the slug in/out of the set to show/hide.
-  const HIDDEN_SPOT_SLUGS = new Set(['kugenuma']);
+  const HIDDEN_SPOT_SLUGS = new Set<string>([]);
 
   const spotsWithCams = (
     await prisma.spot.findMany({
