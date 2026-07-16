@@ -32,7 +32,7 @@ export function SpotRow({
   const [view, setView] = useState<SpotView>('info');
 
   return (
-    <div className="grid gap-3 md:grid-cols-[54px_1fr_1fr] md:items-stretch">
+    <div className="grid gap-3 md:grid-cols-[54px_1fr_1fr_auto] md:items-stretch">
       <SpotRail active={view} onChange={setView} locale={locale} />
       <div className="min-w-0">
         {view === 'info' && (
