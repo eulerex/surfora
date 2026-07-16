@@ -58,6 +58,24 @@ const spots = [
     descZh: '只有台风浪时才是它的主场。上级者向。'
   },
   {
+    slug: 'koshigoe',
+    sortOrder: 35,
+    nameJa: '腰越',
+    nameEn: 'Koshigoe',
+    nameZh: '腰越',
+    region: Region.SHONAN,
+    latitude: 35.307,
+    longitude: 139.501,
+    trainAccessible: true,
+    beginnerFriendly: true,
+    boardTypes: ['Longboard', 'Funboard', 'Shortboard'],
+    optimalSwellDir: '南',
+    offshoreWindDir: '北',
+    descJa: '江の島の東側、腰越海岸。江ノ電「腰越」駅すぐ。鵠沼より波にパワーがあり、台風スウェルで本領発揮。',
+    descEn: 'East of Enoshima, along Koshigoe Beach. Right by Enoden Koshigoe station. More powerful than Kugenuma; comes alive with typhoon swells.',
+    descZh: '江之岛东侧的腰越海岸。江之电「腰越」站即达。浪比鹄沼有力，台风浪期最出彩。'
+  },
+  {
     slug: 'shichirigahama',
     sortOrder: 40,
     nameJa: '七里ヶ浜',
@@ -148,6 +166,24 @@ const spots = [
     descZh: '大矶町的海岸。JR 大矶站徒步 10 分钟。湘南西端、人少、适合新手。'
   },
   {
+    slug: 'shirahama',
+    sortOrder: 75,
+    nameJa: '白浜',
+    nameEn: 'Shirahama',
+    nameZh: '白滨',
+    region: Region.SHIZUOKA,
+    latitude: 34.688,
+    longitude: 138.964,
+    trainAccessible: false,
+    beginnerFriendly: true,
+    boardTypes: ['Longboard', 'Funboard', 'Shortboard'],
+    optimalSwellDir: '南',
+    offshoreWindDir: '西',
+    descJa: '伊豆・下田を代表するビーチブレイク。白砂と透明度の高い海。台風スウェルではパワーのある波が入る。',
+    descEn: 'Izu peninsula\'s iconic beach break in Shimoda. White sand, clear water; powerful when typhoon swells hit.',
+    descZh: '伊豆·下田代表性沙滩浪点。白沙、水质通透，台风浪期波形有力。'
+  },
+  {
     slug: 'kizakihama',
     sortOrder: 80,
     nameJa: '木崎浜',
@@ -205,11 +241,11 @@ const cams = [
     youtubeChannelId: null
   },
   {
-    slug: 'kugenuma-koshigoe',
-    spotSlug: 'kugenuma',
-    nameJa: '江の島 腰越海岸',
-    nameEn: 'Enoshima Koshigoe Beach',
-    nameZh: '江之岛 腰越海岸',
+    slug: 'koshigoe-main',
+    spotSlug: 'koshigoe',
+    nameJa: '腰越海岸',
+    nameEn: 'Koshigoe Beach',
+    nameZh: '腰越海岸',
     youtubeVideoId: 'ESsZ9iB7tz0',
     youtubeChannelId: null
   },
@@ -220,6 +256,15 @@ const cams = [
     nameEn: 'Tsujido Beach',
     nameZh: '辻堂海水浴场',
     youtubeVideoId: 'ceBqnSf8aRQ',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'shirahama-chuo',
+    spotSlug: 'shirahama',
+    nameJa: '白浜中央ビーチ',
+    nameEn: 'Shirahama Chuo Beach',
+    nameZh: '白滨中央海滩',
+    youtubeVideoId: 'mWu0lcIsEX8',
     youtubeChannelId: null
   },
   {
@@ -251,7 +296,18 @@ const cams = [
   }
 ];
 
+// Cams / spots that used to exist but have been renamed or promoted.
+// Deleted at the top of every seed so stale rows don't linger in prod.
+const staleCamSlugs = ['kugenuma-koshigoe'];
+
 async function main() {
+  if (staleCamSlugs.length > 0) {
+    const {count} = await prisma.cam.deleteMany({
+      where: {slug: {in: staleCamSlugs}}
+    });
+    if (count > 0) console.log(`→ removed ${count} stale cam(s)`);
+  }
+
   console.log('→ seeding spots...');
   for (const spot of spots) {
     await prisma.spot.upsert({
