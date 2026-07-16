@@ -25,7 +25,7 @@ export type NewsTag =
   | 'general';
 
 const RSS_TIMEOUT_MS = 8000;
-const RSS_CACHE_SECONDS = 3600; // 1h
+const RSS_CACHE_SECONDS = 900; // 15min — balances Google News refresh cadence and per-visitor freshness
 
 type Query = {
   tag: NewsTag;
@@ -33,15 +33,47 @@ type Query = {
 };
 
 // Google News RSS. Language + region + edition all pinned to Japan/ja.
+// Every query keeps 'サーフィン' / 'サーフ' / 'WSL' / 'JPSA' as an
+// anchor so Google's ranker doesn't drift into off-topic general news
+// (typhoon coverage without surf angle, product PR, etc.).
 const QUERIES: Query[] = [
   {tag: 'shonan', q: 'サーフィン 湘南'},
   {tag: 'shonan', q: 'サーフィン 鵠沼 OR 辻堂 OR 江ノ島'},
   {tag: 'chiba', q: 'サーフィン 千葉 OR 一宮'},
   {tag: 'kyushu', q: 'サーフィン 宮崎 OR 木崎浜'},
-  {tag: 'typhoon', q: '台風 波浪 OR 高波'},
-  {tag: 'wsl', q: 'WSL 日本 OR サーフィン 大会'},
-  {tag: 'gear', q: 'サーフボード 新製品 OR ウェットスーツ'}
+  {tag: 'typhoon', q: '台風 サーフィン うねり OR スウェル'},
+  {tag: 'wsl', q: 'WSL OR JPSA サーフィン'},
+  {tag: 'gear', q: 'サーフボード レビュー OR サーフィン ギア'}
 ];
+
+// A hit must contain at least one of these tokens in title or snippet
+// (case-insensitive) to pass the relevance gate. Everything else is
+// dropped even if it came back from a query — Google's ranker leaks
+// generic content, especially around typhoon / competition seasons.
+const RELEVANCE_TOKENS = [
+  'サーフ',
+  '波乗り',
+  'うねり',
+  'スウェル',
+  'ライディング',
+  'ロングボード',
+  'ショートボード',
+  'ウェットスーツ',
+  'wsl',
+  'jpsa',
+  'isa',
+  'wcs',
+  'ct',
+  'surf',
+  'swell',
+  '冲浪',
+  '沖浪'
+];
+
+function isRelevant(item: {title: string; snippet: string}): boolean {
+  const haystack = `${item.title}\n${item.snippet}`.toLowerCase();
+  return RELEVANCE_TOKENS.some((t) => haystack.includes(t));
+}
 
 function googleNewsUrl(q: string): string {
   const params = new URLSearchParams({
@@ -109,10 +141,15 @@ async function fetchOne(query: Query): Promise<NewsItem[]> {
   }
 }
 
-/** Aggregate all queries, dedupe by link, sort newest first. */
-export async function fetchNews(limit = 30): Promise<NewsItem[]> {
+export type NewsFeed = {
+  items: NewsItem[];
+  fetchedAt: string; // ISO — when the aggregated feed was assembled
+};
+
+/** Aggregate all queries, filter for relevance, dedupe by link, sort newest first. */
+export async function fetchNews(limit = 30): Promise<NewsFeed> {
   const allBatches = await Promise.all(QUERIES.map(fetchOne));
-  const merged: NewsItem[] = allBatches.flat();
+  const merged: NewsItem[] = allBatches.flat().filter(isRelevant);
 
   const byLink = new Map<string, NewsItem>();
   for (const item of merged) {
@@ -123,12 +160,14 @@ export async function fetchNews(limit = 30): Promise<NewsItem[]> {
     }
   }
 
-  return Array.from(byLink.values())
+  const items = Array.from(byLink.values())
     .sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     )
     .slice(0, limit);
+
+  return {items, fetchedAt: new Date().toISOString()};
 }
 
 type Locale = 'ja' | 'zh' | 'en';

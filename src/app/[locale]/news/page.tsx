@@ -32,6 +32,11 @@ const T = {
     typhoon: {ja: '台風・波浪', zh: '台风·波浪', en: 'Typhoon'},
     wsl: {ja: 'WSL/大会', zh: '赛事', en: 'WSL/Contest'},
     gear: {ja: '装備', zh: '装备', en: 'Gear'}
+  },
+  lastUpdated: {
+    ja: '最終取得',
+    zh: '最后抓取',
+    en: 'Last updated'
   }
 } as const;
 
@@ -66,10 +71,21 @@ export default async function NewsPage({
   setRequestLocale(locale);
   const lc = (['ja', 'zh', 'en'].includes(locale) ? locale : 'ja') as Locale;
 
-  const items = await fetchNews(30);
+  const {items, fetchedAt} = await fetchNews(30);
 
   // Generate all summaries in parallel — cached individually.
   const summaries = await Promise.all(items.map((i) => summarize(i, lc)));
+
+  const fetchedLocal = new Date(fetchedAt).toLocaleString(
+    lc === 'ja' ? 'ja-JP' : lc === 'zh' ? 'zh-CN' : 'en-US',
+    {
+      timeZone: 'Asia/Tokyo',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }
+  );
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-14">
@@ -79,6 +95,9 @@ export default async function NewsPage({
         </div>
         <h1 className="text-4xl font-bold">{T.title[lc]}</h1>
         <p className="mt-2 text-muted">{T.subtitle[lc]}</p>
+        <p className="mt-1 text-xs text-muted">
+          {T.lastUpdated[lc]}: {fetchedLocal} (JST)
+        </p>
       </header>
 
       {items.length === 0 ? (
