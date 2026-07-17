@@ -184,6 +184,24 @@ const spots = [
     descZh: '伊豆·下田代表性沙滩浪点。白沙、水质通透，台风浪期波形有力。'
   },
   {
+    slug: 'waikiki',
+    sortOrder: 100,
+    nameJa: 'ワイキキ',
+    nameEn: 'Waikiki',
+    nameZh: '威基基',
+    region: Region.WORLD,
+    latitude: 21.276,
+    longitude: -157.827,
+    trainAccessible: false,
+    beginnerFriendly: true,
+    boardTypes: ['Longboard', 'Funboard'],
+    optimalSwellDir: '南',
+    offshoreWindDir: '北東',
+    descJa: 'ハワイ・オアフ島のワイキキビーチ。世界的なロングボード発祥地の一つ。ロングでゆったり、初心者にも優しい波質。',
+    descEn: 'Waikiki Beach on Oahu, Hawaii — one of the birthplaces of modern longboarding. Mellow, forgiving waves, perfect for beginners.',
+    descZh: '夏威夷欧胡岛威基基海滩。现代长板发源地之一。浪长而温和，对新手友好。'
+  },
+  {
     slug: 'kizakihama',
     sortOrder: 80,
     nameJa: '木崎浜',
@@ -241,15 +259,6 @@ const cams = [
     youtubeChannelId: null
   },
   {
-    slug: 'tsujido-beach',
-    spotSlug: 'tsujido',
-    nameJa: '辻堂海水浴場',
-    nameEn: 'Tsujido Beach',
-    nameZh: '辻堂海水浴场',
-    youtubeVideoId: 'ceBqnSf8aRQ',
-    youtubeChannelId: null
-  },
-  {
     slug: 'shirahama-chuo',
     spotSlug: 'shirahama',
     nameJa: '白浜中央ビーチ',
@@ -265,6 +274,15 @@ const cams = [
     nameEn: 'Shirahama Ohama Beach',
     nameZh: '白滨大滨海水浴场',
     youtubeVideoId: '_Upz1dlQgpg',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'waikiki-marriott',
+    spotSlug: 'waikiki',
+    nameJa: 'ワイキキ ビーチ (Marriott)',
+    nameEn: 'Waikiki Beach (Marriott)',
+    nameZh: '威基基海滩 (Marriott)',
+    youtubeVideoId: '8waVy4wM1tM',
     youtubeChannelId: null
   },
 ];
@@ -284,7 +302,11 @@ const staleCamSlugs = [
   // an always-offline tab sitting next to a working one (辻堂正面 vs
   // 辻堂海水浴場). Re-add as fresh entries when we find live sources.
   'tsujido-main',
-  'ichinomiya-cam'
+  'ichinomiya-cam',
+  // Not actually a live stream — the video is a 61-second recorded clip
+  // dressed up with "ライブカメラ" in the title. Removed until we find
+  // a real 辻堂 live feed.
+  'tsujido-beach'
 ];
 
 async function main() {

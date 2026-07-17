@@ -14,7 +14,8 @@ const REGION_LABEL: Record<Region, Record<Locale, string>> = {
   SHONAN: {ja: '湘南', zh: '湘南', en: 'Shonan'},
   CHIBA: {ja: '千葉', zh: '千叶', en: 'Chiba'},
   SHIZUOKA: {ja: '静岡', zh: '静冈', en: 'Shizuoka'},
-  MIYAZAKI: {ja: '宮崎', zh: '宫崎', en: 'Miyazaki'}
+  MIYAZAKI: {ja: '宮崎', zh: '宫崎', en: 'Miyazaki'},
+  WORLD: {ja: '名波', zh: '世界名浪', en: 'Iconic Waves'}
 };
 
 const T = {

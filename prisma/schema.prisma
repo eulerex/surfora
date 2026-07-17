@@ -26,6 +26,7 @@ enum Region {
   CHIBA
   SHIZUOKA
   MIYAZAKI
+  WORLD
 }
 
 model Spot {
