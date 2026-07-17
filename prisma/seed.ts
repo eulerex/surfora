@@ -19,7 +19,10 @@ const spots = [
     offshoreWindDir: '北',
     descJa: '湘南で最も人気のあるサーフスポット。初心者にも優しい遠浅の砂浜。',
     descEn: 'The most popular surf spot in Shonan. Gentle sandy beach, beginner-friendly.',
-    descZh: '湘南人气最高的浪点。远浅沙滩，对新手友好。'
+    descZh: '湘南人气最高的浪点。远浅沙滩，对新手友好。',
+    locationJa: '神奈川県 藤沢市',
+    locationEn: 'Fujisawa, Kanagawa',
+    locationZh: '神奈川·藤泽'
   },
   {
     slug: 'tsujido',
@@ -37,7 +40,10 @@ const spots = [
     offshoreWindDir: '北',
     descJa: '鵠沼より少し人が少なく、波はやや厚め。中級以上向き。',
     descEn: 'Less crowded than Kugenuma, waves slightly steeper. Better for intermediate+.',
-    descZh: '比鹄沼人少，浪略陡，中级以上更合适。'
+    descZh: '比鹄沼人少，浪略陡，中级以上更合适。',
+    locationJa: '神奈川県 藤沢市',
+    locationEn: 'Fujisawa, Kanagawa',
+    locationZh: '神奈川·藤泽'
   },
   {
     slug: 'inamuragasaki',
@@ -55,7 +61,10 @@ const spots = [
     offshoreWindDir: '北东',
     descJa: '台風スウェルが入ると本領発揮のポイントブレイク。上級者向け。',
     descEn: 'A point break that comes alive with typhoon swells. Advanced only.',
-    descZh: '只有台风浪时才是它的主场。上级者向。'
+    descZh: '只有台风浪时才是它的主场。上级者向。',
+    locationJa: '神奈川県 鎌倉市',
+    locationEn: 'Kamakura, Kanagawa',
+    locationZh: '神奈川·镰仓'
   },
   {
     slug: 'koshigoe',
@@ -73,7 +82,10 @@ const spots = [
     offshoreWindDir: '北',
     descJa: '江の島の東側、腰越海岸。江ノ電「腰越」駅すぐ。鵠沼より波にパワーがあり、台風スウェルで本領発揮。',
     descEn: 'East of Enoshima, along Koshigoe Beach. Right by Enoden Koshigoe station. More powerful than Kugenuma; comes alive with typhoon swells.',
-    descZh: '江之岛东侧的腰越海岸。江之电「腰越」站即达。浪比鹄沼有力，台风浪期最出彩。'
+    descZh: '江之岛东侧的腰越海岸。江之电「腰越」站即达。浪比鹄沼有力，台风浪期最出彩。',
+    locationJa: '神奈川県 鎌倉市',
+    locationEn: 'Kamakura, Kanagawa',
+    locationZh: '神奈川·镰仓'
   },
   {
     slug: 'shichirigahama',
@@ -91,7 +103,10 @@ const spots = [
     offshoreWindDir: '北',
     descJa: '江ノ島を望むロケーション。波は小さめでロングボード向き。',
     descEn: 'Views of Enoshima. Small waves, perfect for longboarding.',
-    descZh: '眺望江之岛的风景。浪偏小，适合长板。'
+    descZh: '眺望江之岛的风景。浪偏小，适合长板。',
+    locationJa: '神奈川県 鎌倉市',
+    locationEn: 'Kamakura, Kanagawa',
+    locationZh: '神奈川·镰仓'
   },
   {
     slug: 'ichinomiya',
@@ -109,7 +124,10 @@ const spots = [
     offshoreWindDir: '北西',
     descJa: '2020年東京五輪サーフィン競技会場。年間通して波が期待できる。',
     descEn: 'Host of the 2020 Tokyo Olympics surfing event. Reliable waves year-round.',
-    descZh: '2020 东京奥运会冲浪比赛场地。全年浪况可期。'
+    descZh: '2020 东京奥运会冲浪比赛场地。全年浪况可期。',
+    locationJa: '千葉県 一宮町',
+    locationEn: 'Ichinomiya, Chiba',
+    locationZh: '千叶·一宫町'
   },
   {
     slug: 'torami',
@@ -127,7 +145,10 @@ const spots = [
     offshoreWindDir: '北西',
     descJa: '一宮より波にパワーがあり、アクションを練習したい人向け。',
     descEn: 'More powerful waves than Ichinomiya. Good for practicing turns.',
-    descZh: '浪比一宫更有力，适合练动作的人。'
+    descZh: '浪比一宫更有力，适合练动作的人。',
+    locationJa: '千葉県 一宮町',
+    locationEn: 'Ichinomiya, Chiba',
+    locationZh: '千叶·一宫町'
   },
   {
     slug: 'shizunami',
@@ -145,7 +166,10 @@ const spots = [
     offshoreWindDir: '北',
     descJa: '静岡の代表的なビーチブレイク。西風が入りやすいので午前中が狙い目。',
     descEn: 'A signature Shizuoka beach break. Westerlies pick up in afternoon.',
-    descZh: '静冈的代表性沙滩浪点。下午西风常起，早上更佳。'
+    descZh: '静冈的代表性沙滩浪点。下午西风常起，早上更佳。',
+    locationJa: '静岡県 牧之原市',
+    locationEn: 'Makinohara, Shizuoka',
+    locationZh: '静冈·牧之原'
   },
   {
     slug: 'oiso',
@@ -163,7 +187,10 @@ const spots = [
     offshoreWindDir: '北',
     descJa: '大磯町の海岸。JR大磯駅から徒歩10分。湘南の西端で人が少なく、初心者にも向く。',
     descEn: 'A quieter Shonan beach in Oiso town, ~10 min walk from JR Oiso Station. Less crowded than Kugenuma/Tsujido.',
-    descZh: '大矶町的海岸。JR 大矶站徒步 10 分钟。湘南西端、人少、适合新手。'
+    descZh: '大矶町的海岸。JR 大矶站徒步 10 分钟。湘南西端、人少、适合新手。',
+    locationJa: '神奈川県 大磯町',
+    locationEn: 'Oiso, Kanagawa',
+    locationZh: '神奈川·大矶町'
   },
   {
     slug: 'shirahama',
@@ -181,7 +208,10 @@ const spots = [
     offshoreWindDir: '西',
     descJa: '伊豆・下田を代表するビーチブレイク。白砂と透明度の高い海。台風スウェルではパワーのある波が入る。',
     descEn: 'Izu peninsula\'s iconic beach break in Shimoda. White sand, clear water; powerful when typhoon swells hit.',
-    descZh: '伊豆·下田代表性沙滩浪点。白沙、水质通透，台风浪期波形有力。'
+    descZh: '伊豆·下田代表性沙滩浪点。白沙、水质通透，台风浪期波形有力。',
+    locationJa: '静岡県 下田市',
+    locationEn: 'Shimoda, Shizuoka',
+    locationZh: '静冈·下田'
   },
   {
     slug: 'waikiki',
@@ -199,7 +229,10 @@ const spots = [
     offshoreWindDir: '北東',
     descJa: 'ハワイ・オアフ島のワイキキビーチ。世界的なロングボード発祥地の一つ。ロングでゆったり、初心者にも優しい波質。',
     descEn: 'Waikiki Beach on Oahu, Hawaii — one of the birthplaces of modern longboarding. Mellow, forgiving waves, perfect for beginners.',
-    descZh: '夏威夷欧胡岛威基基海滩。现代长板发源地之一。浪长而温和，对新手友好。'
+    descZh: '夏威夷欧胡岛威基基海滩。现代长板发源地之一。浪长而温和，对新手友好。',
+    locationJa: 'ハワイ・オアフ島',
+    locationEn: 'Oahu, Hawaii',
+    locationZh: '夏威夷·欧胡岛'
   },
   {
     slug: 'kizakihama',
@@ -217,7 +250,10 @@ const spots = [
     offshoreWindDir: '西',
     descJa: '南九州随一のサーフタウン。長い周期の南うねりが入る。',
     descEn: 'Southern Kyushu\'s premier surf town. Long-period south swells.',
-    descZh: '南九州首屈一指的冲浪小镇。长周期南涌。'
+    descZh: '南九州首屈一指的冲浪小镇。长周期南涌。',
+    locationJa: '宮崎県 宮崎市',
+    locationEn: 'Miyazaki, Miyazaki',
+    locationZh: '宫崎·宫崎市'
   }
 ];
 

@@ -52,6 +52,14 @@ model Spot {
   descEn            String?
   descZh            String?
 
+  // Specific address / prefecture / country, shown in the card header
+  // instead of the generic region chip (which is already visible in
+  // the filter tabs). e.g. Kugenuma → 神奈川県 藤沢市, Waikiki →
+  // ハワイ・オアフ島. Nullable so we can add it incrementally.
+  locationJa        String?
+  locationEn        String?
+  locationZh        String?
+
   sortOrder         Int      @default(1000)
 
   createdAt         DateTime @default(now())
