@@ -96,7 +96,7 @@ export function SpotCard({
             <h3 className="text-[17px] font-bold leading-tight">
               {spotName(spot, locale)}
               <span className="ml-1.5 text-xs font-normal text-muted">
-                {spot.nameEn} ·{' '}
+                {spot.nameEn !== spotName(spot, locale) && `${spot.nameEn} · `}
                 {spotLocation(spot, locale) ??
                   REGION_LABEL[spot.region][locale]}
               </span>
