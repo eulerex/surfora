@@ -218,7 +218,7 @@ const spots = [
     sortOrder: 105,
     nameJa: 'ザ・ウェッジ',
     nameEn: 'The Wedge',
-    nameZh: 'The Wedge',
+    nameZh: '楔角',
     region: Region.WORLD,
     latitude: 33.590,
     longitude: -117.883,
