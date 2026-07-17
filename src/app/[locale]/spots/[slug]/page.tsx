@@ -82,7 +82,6 @@ export default async function SpotDetailPage({
         </div>
         <h1 className="mt-1.5 text-4xl font-bold sm:text-5xl">{name}</h1>
         <p className="mt-1 text-sm text-muted">
-          {spot.nameEn}
           {(() => {
             const loc =
               lc === 'ja'
@@ -90,7 +89,11 @@ export default async function SpotDetailPage({
                 : lc === 'zh'
                   ? spot.locationZh
                   : spot.locationEn;
-            return loc ? ` · ${loc}` : '';
+            const showEn = spot.nameEn !== name;
+            if (showEn && loc) return `${spot.nameEn} · ${loc}`;
+            if (showEn) return spot.nameEn;
+            if (loc) return loc;
+            return '';
           })()}
         </p>
 
