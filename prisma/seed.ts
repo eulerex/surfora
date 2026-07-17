@@ -214,6 +214,27 @@ const spots = [
     locationZh: '静冈·下田'
   },
   {
+    slug: 'wedge',
+    sortOrder: 105,
+    nameJa: 'ザ・ウェッジ',
+    nameEn: 'The Wedge',
+    nameZh: 'The Wedge',
+    region: Region.WORLD,
+    latitude: 33.590,
+    longitude: -117.883,
+    trainAccessible: false,
+    beginnerFriendly: false,
+    boardTypes: ['Shortboard'],
+    optimalSwellDir: '南',
+    offshoreWindDir: '北東',
+    descJa: 'カリフォルニア・ニューポートビーチの伝説的なショアブレイク。防波堤に反射した南うねりが鋭角の三角波を生み、ボディサーフィン／ボディボードの聖地として世界的に有名。',
+    descEn: 'Legendary shore break at Newport Beach, California. Refracted south swells create the signature triangular peak — a world-famous bodysurfing / bodyboarding mecca.',
+    descZh: '加州新港海滩传奇的 shore break。防波堤反射南涌形成三角尖峰浪，是世界闻名的 bodysurf / bodyboard 圣地。',
+    locationJa: 'カリフォルニア州 ニューポートビーチ',
+    locationEn: 'Newport Beach, California',
+    locationZh: '加州·新港海滩'
+  },
+  {
     slug: 'waikiki',
     sortOrder: 100,
     nameJa: 'ワイキキ',
@@ -319,6 +340,15 @@ const cams = [
     nameEn: 'Waikiki Beach (Marriott)',
     nameZh: '威基基海滩 (Marriott)',
     youtubeVideoId: '8waVy4wM1tM',
+    youtubeChannelId: null
+  },
+  {
+    slug: 'wedge-247',
+    spotSlug: 'wedge',
+    nameJa: 'ザ・ウェッジ 24/7',
+    nameEn: 'The Wedge 24/7',
+    nameZh: 'The Wedge 24/7',
+    youtubeVideoId: '4qxqhe67ejU',
     youtubeChannelId: null
   },
 ];
