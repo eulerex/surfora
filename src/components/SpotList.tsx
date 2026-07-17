@@ -23,6 +23,7 @@ const REGION_ORDER: (Region | 'ALL')[] = [
   'CHIBA',
   'SHIZUOKA',
   'MIYAZAKI',
+  'WORLD',
   'ALL'
 ];
 
@@ -31,6 +32,7 @@ const LABEL: Record<Region | 'ALL', Record<Locale, string>> = {
   CHIBA: {ja: '千葉', zh: '千叶', en: 'Chiba'},
   SHIZUOKA: {ja: '静岡', zh: '静冈', en: 'Shizuoka'},
   MIYAZAKI: {ja: '宮崎', zh: '宫崎', en: 'Miyazaki'},
+  WORLD: {ja: '名波', zh: '世界名浪', en: 'Iconic Waves'},
   ALL: {ja: 'すべて', zh: '全部', en: 'All'}
 };
 
@@ -48,6 +50,7 @@ export function SpotList({
     CHIBA: 0,
     SHIZUOKA: 0,
     MIYAZAKI: 0,
+    WORLD: 0,
     ALL: rows.length
   };
   for (const r of rows) counts[r.spot.region]++;
