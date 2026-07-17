@@ -44,6 +44,12 @@ function spotName(spot: Spot, locale: Locale): string {
   return spot.nameEn;
 }
 
+function spotLocation(spot: Spot, locale: Locale): string | null {
+  if (locale === 'ja') return spot.locationJa;
+  if (locale === 'zh') return spot.locationZh;
+  return spot.locationEn;
+}
+
 function spotDesc(spot: Spot, locale: Locale): string | null {
   if (locale === 'ja') return spot.descJa;
   if (locale === 'zh') return spot.descZh;
@@ -90,7 +96,9 @@ export function SpotCard({
             <h3 className="text-[17px] font-bold leading-tight">
               {spotName(spot, locale)}
               <span className="ml-1.5 text-xs font-normal text-muted">
-                {spot.nameEn} · {REGION_LABEL[spot.region][locale]}
+                {spot.nameEn} ·{' '}
+                {spotLocation(spot, locale) ??
+                  REGION_LABEL[spot.region][locale]}
               </span>
             </h3>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
