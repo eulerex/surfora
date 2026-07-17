@@ -8,9 +8,9 @@ type Locale = 'ja' | 'zh' | 'en';
 const T = {
   title: {ja: 'ニュース', zh: '新闻', en: 'News'},
   subtitle: {
-    ja: '湘南・千葉・宮崎・台風・大会などの最新記事。AI が自動で要約。',
-    zh: '湘南 · 千叶 · 宫崎 · 台风 · 赛事最新新闻。AI 自动摘要。',
-    en: 'Latest from Shonan, Chiba, Miyazaki, typhoons, contests. AI-summarized.'
+    ja: '湘南・千葉・宮崎・天気・大会などの最新記事。AI が自動で要約。',
+    zh: '湘南 · 千叶 · 宫崎 · 天气 · 赛事最新新闻。AI 自动摘要。',
+    en: 'Latest from Shonan, Chiba, Miyazaki, weather, contests. AI-summarized.'
   },
   source: {ja: '出典', zh: '来源', en: 'Source'},
   readOriginal: {
@@ -29,7 +29,7 @@ const T = {
     shonan: {ja: '湘南', zh: '湘南', en: 'Shonan'},
     chiba: {ja: '千葉', zh: '千叶', en: 'Chiba'},
     kyushu: {ja: '九州', zh: '九州', en: 'Kyushu'},
-    typhoon: {ja: '台風・波浪', zh: '台风·波浪', en: 'Typhoon'},
+    weather: {ja: '天気・うねり', zh: '天气·涌浪', en: 'Weather'},
     wsl: {ja: 'WSL/大会', zh: '赛事', en: 'WSL/Contest'},
     gear: {ja: '装備', zh: '装备', en: 'Gear'}
   },
@@ -44,7 +44,7 @@ const TAG_COLOR: Record<NewsTag, string> = {
   shonan: 'bg-sky-brand text-ocean',
   chiba: 'bg-[#eef8f1] text-green-brand',
   kyushu: 'bg-[#fef3e7] text-yellow-brand',
-  typhoon: 'bg-red-brand/10 text-red-brand',
+  weather: 'bg-red-brand/10 text-red-brand',
   wsl: 'bg-navy/10 text-navy',
   gear: 'bg-line text-muted',
   general: 'bg-line text-muted'

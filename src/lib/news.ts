@@ -19,7 +19,7 @@ export type NewsTag =
   | 'shonan'
   | 'chiba'
   | 'kyushu'
-  | 'typhoon'
+  | 'weather'
   | 'wsl'
   | 'gear'
   | 'general';
@@ -49,8 +49,10 @@ const QUERIES: Query[] = [
   {tag: 'shonan', q: 'サーフィン 鵠沼 OR 辻堂 OR 江ノ島'},
   {tag: 'chiba', q: 'サーフィン 千葉 OR 一宮'},
   {tag: 'kyushu', q: 'サーフィン 宮崎 OR 木崎浜'},
-  {tag: 'typhoon', q: '台風 サーフィン うねり OR スウェル'},
+  {tag: 'weather', q: '台風 うねり OR スウェル サーフィン'},
+  {tag: 'weather', q: '波浪 予報 サーフィン OR うねり 予報'},
   {tag: 'wsl', q: 'WSL OR JPSA サーフィン'},
+  {tag: 'wsl', q: 'サーフィン 大会 OR 選手権'},
   {tag: 'gear', q: 'サーフボード レビュー OR サーフィン ギア'}
 ];
 
@@ -81,6 +83,38 @@ const RELEVANCE_TOKENS = [
 function isRelevant(item: {title: string; snippet: string}): boolean {
   const haystack = `${item.title}\n${item.snippet}`.toLowerCase();
   return RELEVANCE_TOKENS.some((t) => haystack.includes(t));
+}
+
+// Titles matching any of these patterns are dropped even if they
+// technically contain a surf keyword. Catches the recurring political
+// tangents (a politician incidentally surfing on the way home from a
+// speeding stop is not surf news) and paid AD posts syndicated as
+// news items.
+const BLOCKED_TITLE_PATTERNS: RegExp[] = [
+  /【AD】/i,
+  /【広告】/,
+  /スピード違反/,
+  /議員/,
+  /選挙/,
+  /党費/,
+  /山本太郎/
+];
+
+function isBlocked(item: {title: string}): boolean {
+  return BLOCKED_TITLE_PATTERNS.some((re) => re.test(item.title));
+}
+
+// Normalize a title so we can catch the same story cross-posted from
+// multiple sources. Strips 【tag】 brackets, trailing " - Source"
+// attribution, and trailing (Source) parentheticals, then removes
+// whitespace and lowercases. Preserves the story's actual gist.
+function normalizedTitle(t: string): string {
+  return t
+    .replace(/【[^】]+】/g, '')
+    .replace(/\s*[-–—]\s*[^-–—]+$/, '')
+    .replace(/[（(][^）)]+[）)]\s*$/g, '')
+    .replace(/\s+/g, '')
+    .toLowerCase();
 }
 
 function googleNewsUrl(q: string): string {
@@ -154,21 +188,38 @@ export type NewsFeed = {
   fetchedAt: string; // ISO — when the aggregated feed was assembled
 };
 
-/** Aggregate all queries, filter for relevance, dedupe by link, sort newest first. */
+/** Aggregate all queries, filter for relevance, dedupe by link + title, sort newest first. */
 async function assembleNewsFeed(limit: number): Promise<NewsFeed> {
   const allBatches = await Promise.all(QUERIES.map(fetchOne));
-  const merged: NewsItem[] = allBatches.flat().filter(isRelevant);
+  const merged: NewsItem[] = allBatches
+    .flat()
+    .filter(isRelevant)
+    .filter((i) => !isBlocked(i));
 
+  // Two-pass dedup: exact link first (fast), then normalized title.
+  // Normalized-title pass catches cross-posts where the same press
+  // release is syndicated to 4+ sources with different URLs.
   const byLink = new Map<string, NewsItem>();
   for (const item of merged) {
     if (!item.link) continue;
-    const existing = byLink.get(item.link);
-    if (!existing) {
-      byLink.set(item.link, item);
+    if (!byLink.has(item.link)) byLink.set(item.link, item);
+  }
+
+  const byTitle = new Map<string, NewsItem>();
+  for (const item of byLink.values()) {
+    const key = normalizedTitle(item.title);
+    if (!key) continue;
+    const existing = byTitle.get(key);
+    if (
+      !existing ||
+      new Date(item.publishedAt).getTime() >
+        new Date(existing.publishedAt).getTime()
+    ) {
+      byTitle.set(key, item);
     }
   }
 
-  const items = Array.from(byLink.values())
+  const items = Array.from(byTitle.values())
     .sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
