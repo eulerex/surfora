@@ -18,13 +18,17 @@ type Row = {
   cams: CamData[];
 };
 
+// Layout intent: 4 Japan regions + ALL(日本全国) + WORLD.
+// ALL means "all of Japan" — WORLD sits outside that summation and
+// gets its own chip on the right so users read the row as
+// "japan groups + japan-total | world icons".
 const REGION_ORDER: (Region | 'ALL')[] = [
   'SHONAN',
   'CHIBA',
   'SHIZUOKA',
   'MIYAZAKI',
-  'WORLD',
-  'ALL'
+  'ALL',
+  'WORLD'
 ];
 
 const LABEL: Record<Region | 'ALL', Record<Locale, string>> = {
@@ -51,12 +55,14 @@ export function SpotList({
     SHIZUOKA: 0,
     MIYAZAKI: 0,
     WORLD: 0,
-    ALL: rows.length
+    ALL: rows.filter((r) => r.spot.region !== 'WORLD').length
   };
   for (const r of rows) counts[r.spot.region]++;
 
   const filtered =
-    active === 'ALL' ? rows : rows.filter((r) => r.spot.region === active);
+    active === 'ALL'
+      ? rows.filter((r) => r.spot.region !== 'WORLD')
+      : rows.filter((r) => r.spot.region === active);
 
   return (
     <>
