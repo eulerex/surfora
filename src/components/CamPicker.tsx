@@ -101,7 +101,11 @@ export function CamPicker({
       </div>
 
       {showTabs ? (
-        <div className="flex w-[104px] shrink-0 flex-col gap-1.5">
+        // On mobile the parent grid stacks single-column, so a fixed
+        // 104px picker column would leave a lonely narrow strip. Go
+        // full-width horizontal row on mobile, revert to the 104px
+        // vertical column at md+.
+        <div className="flex flex-row gap-1.5 md:w-[104px] md:shrink-0 md:flex-col">
           {cams.map((c) => {
             const isActive = c.id === current.id;
             const camLive = isLive(c);
@@ -114,7 +118,7 @@ export function CamPicker({
                   (isActive
                     ? 'border-ocean bg-sky-brand '
                     : 'border-line bg-white hover:border-ocean/50 ') +
-                  'flex flex-col items-start gap-1 rounded-lg border-[1.5px] px-2.5 py-2 text-left transition-colors'
+                  'flex flex-1 flex-col items-center gap-1 rounded-lg border-[1.5px] px-2.5 py-2 text-center transition-colors md:flex-none md:items-start md:text-left'
                 }
               >
                 <span
