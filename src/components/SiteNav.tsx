@@ -41,25 +41,25 @@ const NAV: NavItem[] = [
 
 export function SiteNav({locale}: {locale: Locale}) {
   return (
-    <nav className="sticky top-0 z-50 flex h-14 items-center gap-1 border-b border-line bg-white/90 px-5 backdrop-blur">
+    <nav className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b border-line bg-white/90 px-4 backdrop-blur sm:px-5">
       <Link
         href={`/${locale}`}
-        className="mr-4 text-xl font-extrabold tracking-wide text-ocean"
+        className="shrink-0 text-xl font-extrabold tracking-wide text-ocean"
       >
         Surf<span className="text-navy">ora</span>
       </Link>
-      <div className="flex flex-1 flex-wrap items-center gap-0.5">
+      <div className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {NAV.map((item, i) => (
           <Link
             key={i}
             href={item.href(locale)}
-            className="rounded-lg px-2.5 py-1.5 text-sm text-muted transition-colors hover:bg-sky-brand hover:text-ocean"
+            className="shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm text-muted transition-colors hover:bg-sky-brand hover:text-ocean"
           >
             {item.label[locale]}
           </Link>
         ))}
       </div>
-      <div className="ml-auto flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <LocaleSwitcher current={locale} />
       </div>
     </nav>
