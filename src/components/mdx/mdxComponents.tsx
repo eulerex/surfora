@@ -1,6 +1,7 @@
 import type {MDXRemoteProps} from 'next-mdx-remote/rsc';
 import {YouTube} from './YouTube';
 import {SpotLink} from './SpotLink';
+import {Figure} from './Figure';
 
 type Locale = 'ja' | 'zh' | 'en';
 
@@ -87,6 +88,7 @@ export function makeLessonMdxComponents(
   return {
     ...baseComponents,
     YouTube,
+    Figure,
     // Bind current locale so lesson authors just write <SpotLink slug="kugenuma">…</SpotLink>
     SpotLink: (props: {slug: string; children: React.ReactNode}) => (
       <SpotLink {...props} locale={locale} />
