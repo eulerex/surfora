@@ -6,7 +6,13 @@ const T = {
   section: {ja: 'コミュニティ', zh: '圈子', en: 'Community'},
   members: {ja: 'メンバー', zh: '成员', en: 'Members'},
   leader: {ja: 'オーナー', zh: '群主', en: 'Group leader'},
-  wechat: {ja: 'WeChat', zh: '微信', en: 'WeChat'}
+  wechat: {ja: 'WeChat', zh: '微信', en: 'WeChat'},
+  email: {ja: 'メール', zh: '邮箱', en: 'Email'},
+  applyByEmail: {
+    ja: 'メールでの入会申請も受け付けています。上記アドレスまでご連絡ください。',
+    zh: '支持通过邮件申请入群，发邮件到上方邮箱即可。',
+    en: 'You can also apply to join by email — just reach out to the address above.'
+  }
 } as const;
 
 function localizedDesc(c: Community, locale: Locale): string {
@@ -81,6 +87,17 @@ export function CommunityCard({
                   </span>
                 </div>
               )}
+              {community.leaderEmail && (
+                <div className="mt-1 text-[11px] text-muted">
+                  {T.email[locale]}:{' '}
+                  <a
+                    href={`mailto:${community.leaderEmail}`}
+                    className="font-mono tracking-wider text-ocean hover:underline"
+                  >
+                    {community.leaderEmail}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
@@ -94,6 +111,20 @@ export function CommunityCard({
             <p className="mt-2.5 text-sm leading-relaxed text-muted">
               {localizedDesc(community, locale)}
             </p>
+            {community.leaderEmail && (
+              <p className="mt-3 flex items-start gap-2 rounded-xl bg-sky-brand/40 px-3 py-2 text-xs leading-relaxed text-ocean">
+                <span aria-hidden>✉️</span>
+                <span>
+                  {T.applyByEmail[locale]}{' '}
+                  <a
+                    href={`mailto:${community.leaderEmail}`}
+                    className="font-semibold underline"
+                  >
+                    {community.leaderEmail}
+                  </a>
+                </span>
+              </p>
+            )}
           </div>
         </div>
       </div>
