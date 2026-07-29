@@ -26,6 +26,10 @@ const NAV: NavItem[] = [
     label: {ja: 'レッスン', zh: '教程', en: 'Lessons'}
   },
   {
+    href: (l) => `/${l}/gear`,
+    label: {ja: 'ギア', zh: '装备', en: 'Gear'}
+  },
+  {
     href: (l) => `/${l}/safety`,
     label: {ja: '安全', zh: '安全', en: 'Safety'}
   },
