@@ -336,10 +336,10 @@ const cams = [
   {
     slug: 'waikiki-marriott',
     spotSlug: 'waikiki',
-    nameJa: 'ワイキキ ビーチ (Marriott)',
-    nameEn: 'Waikiki Beach (Marriott)',
-    nameZh: '威基基海滩 (Marriott)',
-    youtubeVideoId: '8waVy4wM1tM',
+    nameJa: 'ワイキキ (Elks Lodge)',
+    nameEn: 'Waikiki (Elks Lodge)',
+    nameZh: '威基基 (Elks Lodge)',
+    youtubeVideoId: 'lBjz3lX14zY',
     youtubeChannelId: null
   },
   {
