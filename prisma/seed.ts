@@ -334,6 +334,15 @@ const cams = [
     youtubeChannelId: null
   },
   {
+    slug: 'shirahama-izu',
+    spotSlug: 'shirahama',
+    nameJa: '伊豆白浜海岸',
+    nameEn: 'Izu Shirahama Beach',
+    nameZh: '伊豆白滨海岸',
+    youtubeVideoId: '-JyiKauoFF0',
+    youtubeChannelId: null
+  },
+  {
     slug: 'waikiki-marriott',
     spotSlug: 'waikiki',
     nameJa: 'ワイキキ (Elks Lodge)',
